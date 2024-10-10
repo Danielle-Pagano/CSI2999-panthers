@@ -34,7 +34,7 @@ window.geometry('600x400')
 window.title('Images')
 
 # Import an image
-image_original = Image.open('Desktop/Projects/DTA/profile_picture/squirrel.jpg')
+image_original = Image.open('Squirrel.jpg')
 image_tk = ImageTk.PhotoImage(image_original)
 
 # Widget 
