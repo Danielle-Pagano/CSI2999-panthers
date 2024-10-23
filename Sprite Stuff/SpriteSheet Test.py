@@ -1,8 +1,12 @@
 import tkinter as tk
+import os as os
 from PIL import Image
 
-image_original = Image.open('Squirrel.png')
+#Needed for reading files in the current directory
+cd = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+print(cd)
 
+#Animal Class Object
 class Animal:
     #Image splitter#
     #//NOTE: Will only read in squares!//#
@@ -10,16 +14,22 @@ class Animal:
         
         framesY = [] 
         
-        def appendList(l, ele):
-            l.append(ele)
+        def appendList(l, element):
+            l.append(element)
             return l
+        
+        # Checks if the Image has any colors, returns false if no color is found
+        def imgCheck(i):
+            j = True
+            colorI = str(i.getcolors())
+            if colorI == "[(1024, (0, 0, 0, 0))]":
+                j = False
+            return j
 
         #Needed to get the spritesheet size
         x, y = img.size
         frameNumX = int(x/byteSize)
         frameNumY = int(y/byteSize)
-
-        print(frameNumX, frameNumY)
 
         #Splits the image and adds them to an array
         y = 0
@@ -30,10 +40,10 @@ class Animal:
                 #Frame 1 Example: (x0, y0, x32, y32)
                 j = byteSize * x
                 k = byteSize * y
-                tempImg = img.crop((0 + j, 0 + k, byteSize + j, byteSize + k))        
-                tempFramesX.append(tempImg)
+                tempImg = img.crop((0 + j, 0 + k, byteSize + j, byteSize + k)) 
+                if imgCheck(tempImg) == True:
+                    tempFramesX.append(tempImg)
                 x += 1
-
             framesY = appendList(framesY, tempFramesX)
             y += 1
 
@@ -48,7 +58,15 @@ class Animal:
         image = self.frame[y][x]
         return image
 
+#Sprite file name
+#Open in the cd, then the image file name
+Squirrelsprite = "STS.png"
+image_original = Image.open(cd + "/" + Squirrelsprite)
+
 ##//Demo//##
 #(Image Object, PixelxPixel count) (X Y)
-#squirrel = Animal(image_original, 32)
-#squirrel.FrameGet(0, 0).show()
+
+y = int(input())
+x = int(input())
+squirrel = Animal(image_original, 32)
+squirrel.FrameGet(y, x).show()
