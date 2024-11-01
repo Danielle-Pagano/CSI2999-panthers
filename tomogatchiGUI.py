@@ -6,16 +6,14 @@ from PIL import Image, ImageTk
 import tkinter.font as tkFont
 import os as os
 
+import time
+import threading
+
 # Importing sprite framework
 from Sprite_Stuff import SpriteSheetFramework as sprite
 # Dynamic File Path (Will read where this python file is running and output a string)
 cd = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 #print (cd)
-
-#A function will need to set adoptedAnimal's Value
-adoptedAnimal = 0
-pet = sprite.Animal(adoptedAnimal)
-
 
 root = tb.Window(themename='morph')
 root.rowconfigure(0)
@@ -183,25 +181,77 @@ mainscreen.columnconfigure(0)
 mainscreen.columnconfigure(1)
 mainscreen.columnconfigure(2)
 
+
+# Needed for Sprite work
+petState = 0
+def setPetState(i):
+    global petState
+    petState = 1
+
+
 # label frame containing play/feed/sleep buttons
 activity_buttons_frame=tk.LabelFrame(mainscreen, text="Activity")
 activity_buttons_frame.grid(row=1,column=1,padx=20,pady=(20,10),sticky='n')
 
 # all 3 buttons need additional frame
-play_button=tb.Button(activity_buttons_frame,text="Play",bootstyle='info',cursor='hand2')
-play_button.grid(row=0,column=0,sticky='ew')
+play_button=tb.Button(activity_buttons_frame,text="Play",bootstyle='info', command=lambda: setPetState(1), cursor='hand2')
+play_button.grid(row=1,column=0,sticky='ew')
 
 feed_button=tb.Button(activity_buttons_frame,text="Feed",bootstyle='warning',cursor='hand2')
-feed_button.grid(row=0,column=1,sticky='ew')
+feed_button.grid(row=1,column=1,sticky='ew')
 
 sleep_button=tb.Button(activity_buttons_frame,text="Sleep",bootstyle='primary',cursor='hand2')
-sleep_button.grid(row=0,column=2,sticky='ew')
+sleep_button.grid(row=1,column=2,sticky='ew')
 
 for widget in activity_buttons_frame.winfo_children():
     widget.grid_configure(padx=5,pady=10)
 
 home_button3=tb.Button(mainscreen, text="Home",bootstyle = 'light',command=lambda: homescreen.tkraise(),cursor='hand2')
 home_button3.grid(row=2, column=0, sticky='sw',padx=20,pady=20)
+
+
+#A function will need to set adoptedAnimal's Value
+adoptedAnimal = 0
+pet = sprite.Animal(adoptedAnimal)
+
+# Spritework
+# Requires Multithreading due to needing a constant loop
+def imgUpdate(y, speed):
+    i = 0
+    j = len(pet.frame[y])
+    print(i, j)
+    while i < j:
+         img = ImageTk.PhotoImage(pet.FrameGet(y, i))       
+         i += 1
+         image_label = tk.Label(mainscreen, image=img)
+         image_label.grid(row=0, column=1)
+         time.sleep(speed)
+
+def spriteAnimation():
+    global petState
+    stop = True
+    #State Value
+    while stop == True:
+        #Idle
+        if petState == 0:
+            imgUpdate(petState, 0.3)
+        
+        #Wave
+        if petState == 1:
+            i = 0
+            while i < 2:
+                imgUpdate(petState, 0.3)
+                i = i + 1
+            petState = 0
+
+        #Enter Playhouse
+        #Eatting
+        #Sleep
+        #
+
+spriteThread = threading.Thread(target=spriteAnimation)
+spriteThread.start()
+
 
 homescreen.tkraise()
 root.title("Tomogatchi")

@@ -2,13 +2,13 @@ import os as os
 from PIL import Image
 
 cd = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
-#print(cd)
+print(cd)
 
 critterList = []
 
 #This will change to check every file within file "Sprites" and add to critterList array
 Squirrelsprite = "STS.png"
-crit1 = Image.open(cd + "/" + Squirrelsprite)
+crit1 = Image.open(cd + "/SpriteFolder/STS.png")
 critterList.append(crit1)
 
 #Animal Class Object
@@ -56,9 +56,10 @@ class Animal:
 
     def __init__(self, choice):
         img = critterList[choice]
-        byteSize = 32
+        byteSize = 256
         self.frame = self.FrameSplit(img, byteSize) 
     
     def FrameGet(self, y, x):
         image = self.frame[y][x]
         return image
+
