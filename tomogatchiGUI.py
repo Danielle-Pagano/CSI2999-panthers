@@ -5,6 +5,21 @@ import ttkbootstrap as tb
 from PIL import Image, ImageTk
 import tkinter.font as tkFont
 from datetime import datetime
+import os as os
+import time
+import threading
+
+from Sprite_Stuff import SpriteSheetFramework as sprite
+cd = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+
+# for displaying image on screen with universal file path
+def display_image(filename):
+    current_dir = os.path.dirname(__file__)
+    image_path = os.path.join(current_dir, "images", filename)
+    image = Image.open(image_path)
+    photo = ImageTk.PhotoImage(image)
+    return photo
+
 
 #HomeScreen frame
 class HomeScreen(tk.Frame):
@@ -12,15 +27,15 @@ class HomeScreen(tk.Frame):
         super().__init__(parent)
         self.controller = controller
         self.grid(row=0, column=0, sticky='nsew')
-
-        #background_image = Image.open("images/backgroundPic.jpg")
-        #background_image=ImageTk.PhotoImage(background_image)
-        #image_label=tk.Label(self, image=background_image)
-        #image_label.grid(row=0,column=0, sticky='s')
-        #image_label.pack(pady=20)
         
         title_label = tb.Label(self, text="Welcome!", anchor="n", font=('Arial', 30))
         title_label.pack(padx=10, pady=10)
+
+        # background on home screen
+        background_image = display_image("backgroundPic.jpg")
+        background_label = tk.Label(self, image=background_image)
+        background_label.image = background_image
+        background_label.pack(fill="both", expand=True)
         
         #separates title screen from rest of frame
         home_separator = ttk.Separator(self, orient='horizontal')
@@ -189,17 +204,67 @@ class MainScreen(tk.Frame):
         self.controller = controller
         self.grid(row=0, column=0, sticky='nsew')
 
+        self.petState = 0
+        self.pet = sprite.Animal(0)
+        self.image_label = tk.Label(self)
+        self.image_label.grid(row=0, column=1)
+        self.current_img = None
+
+        # Start the animation thread
+        self.stop_animation = False
+        self.is_busy = False
+        threading.Thread(target=self.sprite_animation).start()
+
+        # Setup GUI elements for activities (Play, Feed, etc.)
+        self.setup_activity_buttons()
+
+    def setup_activity_buttons(self):
         activity_buttons_frame = tk.LabelFrame(self, text="Activity")
         activity_buttons_frame.grid(row=1, column=1, padx=20, pady=(20, 10), sticky='n')
+        tb.Button(activity_buttons_frame, text="Play", bootstyle='info',
+                  command=lambda: self.trigger_animation_navigate(1), cursor='hand2').grid(row=0, column=0, sticky='ew')
+        tb.Button(activity_buttons_frame, text="Feed", bootstyle='warning',
+                  command=lambda: self.trigger_animation_navigate(2), cursor='hand2').grid(row=0, column=1, sticky='ew')
+        tb.Button(activity_buttons_frame, text="Sleep", bootstyle='primary',
+                  command=lambda: self.trigger_animation_navigate(3), cursor='hand2').grid(row=0, column=2, sticky='ew')
+    
+    def trigger_animation_navigate(self, state):
+        self.petState = state
+        self.is_busy = True
 
-        tb.Button(activity_buttons_frame, text="Play", bootstyle='info', command=lambda: controller.show_frame("PlayScreen"), cursor='hand2').grid(row=0, column=0, sticky='ew')
-        tb.Button(activity_buttons_frame, text="Feed", bootstyle='warning', command=lambda: controller.show_frame("FeedScreen"), cursor='hand2').grid(row=0, column=1, sticky='ew')
-        tb.Button(activity_buttons_frame, text="Sleep", bootstyle='primary', command=lambda: controller.show_frame("SleepScreen"), cursor='hand2').grid(row=0, column=2, sticky='ew')
+    def sprite_animation(self):
+        # Run this in a loop to handle animation
+        while not self.stop_animation:
+            if self.is_busy:
+                self.play_activity_animation()
+                self.is_busy = False
+                self.petState = 0  # Return to idle state
+            else:
+                self.play_idle_animation()
 
-        tb.Button(self, text="Home", bootstyle='light', command=lambda: controller.show_frame("HomeScreen"),
-                  cursor='hand2').grid(row=2, column=0, sticky='sw', padx=20, pady=20)
-        
+    def play_idle_animation(self):
+        for frame_index in range(len(self.pet.frame[0])):  # Loop through idle frames
+            if self.is_busy:
+                break  # Interrupt idle if an activity is triggered
+            self.update_sprite(0, frame_index)
+            time.sleep(0.3)  # Control frame rate
 
+    def play_activity_animation(self):
+        for frame_index in range(len(self.pet.frame[self.petState])):  # Loop through activity frames
+            self.update_sprite(self.petState, frame_index)
+            time.sleep(0.3)  # Control frame rate
+
+    def update_sprite(self, y, frame_index):
+        # Retrieve and update the image for the current frame
+        frame_image = self.pet.FrameGet(y, frame_index)
+        self.current_img = ImageTk.PhotoImage(frame_image)
+        self.image_label.config(image=self.current_img)
+
+    def stop_animation(self):
+        self.stop_animation = True
+
+
+# not currently being used
 class PlayScreen(tk.Frame):
     def __init__(self, parent, controller):
         super().__init__(parent)
@@ -212,6 +277,7 @@ class PlayScreen(tk.Frame):
                    cursor='hand2').grid(row=2, column=1, sticky='sw', padx=20, pady=20)
 
 
+#not currently being used
 class FeedScreen(tk.Frame):
     def __init__(self, parent, controller):
         super().__init__(parent)
@@ -223,7 +289,7 @@ class FeedScreen(tk.Frame):
         tb.Button(self, text="Back", bootstyle='secondary', command=lambda: controller.show_frame("MainScreen"),
                    cursor='hand2').grid(row=2, column=1, sticky='sw', padx=20, pady=20)
 
-
+# not currently being used
 class SleepScreen(tk.Frame):
     def __init__(self, parent, controller):
         super().__init__(parent)
