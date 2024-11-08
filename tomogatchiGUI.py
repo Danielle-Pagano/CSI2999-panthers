@@ -186,7 +186,7 @@ mainscreen.columnconfigure(2)
 petState = 0
 def setPetState(i):
     global petState
-    petState = 1
+    petState = i
 
 
 # label frame containing play/feed/sleep buttons
@@ -197,10 +197,10 @@ activity_buttons_frame.grid(row=1,column=1,padx=20,pady=(20,10),sticky='n')
 play_button=tb.Button(activity_buttons_frame,text="Play",bootstyle='info', command=lambda: setPetState(1), cursor='hand2')
 play_button.grid(row=1,column=0,sticky='ew')
 
-feed_button=tb.Button(activity_buttons_frame,text="Feed",bootstyle='warning',cursor='hand2')
+feed_button=tb.Button(activity_buttons_frame,text="Feed",bootstyle='warning', command=lambda: setPetState(2),cursor='hand2')
 feed_button.grid(row=1,column=1,sticky='ew')
 
-sleep_button=tb.Button(activity_buttons_frame,text="Sleep",bootstyle='primary',cursor='hand2')
+sleep_button=tb.Button(activity_buttons_frame,text="Sleep",bootstyle='primary',command=lambda: setPetState(3), cursor='hand2')
 sleep_button.grid(row=1,column=2,sticky='ew')
 
 for widget in activity_buttons_frame.winfo_children():
@@ -219,7 +219,6 @@ pet = sprite.Animal(adoptedAnimal)
 def imgUpdate(y, speed):
     i = 0
     j = len(pet.frame[y])
-    print(i, j)
     while i < j:
          img = ImageTk.PhotoImage(pet.FrameGet(y, i))       
          i += 1
@@ -235,6 +234,9 @@ def spriteAnimation():
         #Idle
         if petState == 0:
             imgUpdate(petState, 0.3)
+
+        if petState == 3:
+            imgUpdate(petState, 0.4)
         
         #Wave
         if petState == 1:
@@ -243,6 +245,14 @@ def spriteAnimation():
                 imgUpdate(petState, 0.3)
                 i = i + 1
             petState = 0
+
+        if petState == 2:
+            i = 0
+            while i < 2:
+                imgUpdate(petState, 0.3)
+                i = i + 1
+            petState = 0
+
 
         #Enter Playhouse
         #Eatting

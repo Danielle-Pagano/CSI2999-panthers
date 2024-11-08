@@ -27,7 +27,7 @@ class Animal:
         def imgCheck(i):
             j = True
             colorI = str(i.getcolors())
-            if colorI == "[(1024, (0, 0, 0, 0))]":
+            if colorI == "[(16384, (0, 0, 0, 0))]":
                 j = False
             return j
 
@@ -37,6 +37,7 @@ class Animal:
         frameNumY = int(y/byteSize)
 
         #Splits the image and adds them to an array
+    
         y = 0
         while y < frameNumY:
             tempFramesX = []
@@ -56,10 +57,14 @@ class Animal:
 
     def __init__(self, choice):
         img = critterList[choice]
-        byteSize = 256
+        byteSize = 128
         self.frame = self.FrameSplit(img, byteSize) 
     
     def FrameGet(self, y, x):
         image = self.frame[y][x]
         return image
 
+
+squirrel = Animal(0)
+squirrel.FrameGet(0, 0).show()
+print(squirrel.FrameGet(0, 0).getcolors())
