@@ -1,120 +1,29 @@
 import tkinter as tk
-from tkinter import ttk
 import customtkinter as ctk
 from PIL import Image, ImageTk
+from login import LoginPage
+from petView import petViewPage
 
+class MainApp:
+    def __init__(self, window):
+        self.window = window
+        self.window.title("Pet Management App")
 
-window = tk.Tk()
-window.title("login form")
-#title of the application When being ran
+        # Initialize pages
+        self.login_page = LoginPage(self.window, self.show_petview)
+        self.petview_page = petViewPage(self.window)
 
-window.geometry('700x700')
-#Dimensions of the window upon running app
+        # Start with the login page
+        self.login_page.show()
 
-window.configure(bg="#000000")
-#Background color of my window
+    def show_petview(self):
+        self.login_page.hide()
+        self.petview_page.show()
 
-#Creating a frame to hold the widgets below
-login_frame = tk.Frame(window, bg="#000000")
-login_frame.pack()
-
-#Creating the logged in page
-pet_view_frame = tk.Frame(window, bg="#000000")
-
-
-
-
-#The function for the login
-#This is where database intergration starts
-def login():
-    username = "G"
-    password = "G"
-    if username_entry.get() == username and password_entry.get() == password:
-        print("Successfully logged in")
-        login_frame.pack_forget()
-        pet_view_frame.pack()
-    else:
-        print("Invalid Login")
-
-
-# Creating all the widgets in the login frame
-login_label = tk.Label(login_frame, text = "Login", bg="#000000", font=("Arial",30))
-username_label = tk.Label(login_frame, text="Username", bg="#000000", font=("Arial",15))
-username_entry = tk.Entry(login_frame, highlightthickness=0, bd=0)
-password_entry = tk.Entry(login_frame, show="*", highlightthickness=0, bd=0)
-password_label = tk.Label(login_frame, text="Password", bg="#000000", font=("Arial",15))
-login_button = tk.Button(login_frame,
-                         text="Login",
-                         highlightthickness=0, 
-                         bd=0,
-                         bg="#000000", 
-                         relief="flat", 
-                         highlightbackground="#000000", 
-                         highlightcolor="#000000", 
-                         font=("Arial",15),
-                         command=login )
-
-#Placing login widgets on the login frame
-login_label.grid(row=0, column=0, columnspan=2, sticky="news", pady=40)
-username_label.grid(row=1,column=0)
-username_entry.grid(row=1,column=1, pady=20)
-password_label.grid(row=2,column=0)
-password_entry.grid(row=2, column=1, pady=20)
-login_button.grid(row=3, column=0, columnspan=2, pady=30)
-
-
-
-
-
-'''
-the section below comprises all of what the user will see once they are loggged in 
-
-and slected their saved pet file.
-'''
-
-
-#Storing the gif into variables/objects
-idle_Squirrel = "/Users/ggvhs/Desktop/Projects/pets/pets/images/idle_Squirrel.gif"
-info = Image.open(idle_Squirrel)
-
-#retriving number of frames
-frames = info.n_frames
-
-#Storing the gif into variables/objects
-photoimage_objects = []
-for i in range(frames):
-    obj = tk.PhotoImage(file=idle_Squirrel, format=f"gif -index {i}")
-    photoimage_objects.append(obj)
-
-
-def idleAnimation(current_frame=0):
-    image = photoimage_objects[current_frame]
-    idle_gif_label.configure(image=image)
-    current_frame = (current_frame + 1) % frames  # Loop back to the first frame
-    pet_view_frame.after(200, idleAnimation, current_frame)  # Run the function again after 50ms
-
-
-# Creating all the widgets in the pet view frame
-idle_gif_label = tk.Label(pet_view_frame, image="", bg="#000000")
-
-
-#Placing all the pet view widgets on the pet view frame
-idle_gif_label.pack()
-idleAnimation()
-
-
-
-
-
-
-
-
-window.mainloop()
-#^^ This is what the entire program is ran in
-
-
-
-
+if __name__ == "__main__":
+    window = tk.Tk()
+    app = MainApp(window)
+    window.mainloop()
 
 
 
