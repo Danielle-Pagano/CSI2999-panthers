@@ -5,6 +5,22 @@ import ttkbootstrap as tb
 from PIL import Image, ImageTk
 import tkinter.font as tkFont
 from datetime import datetime
+import os as os
+import time
+import threading
+
+import app
+from Sprite_Stuff import SpriteSheetFramework as sprite
+cd = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+
+# for displaying image on screen with universal file path
+def display_image(filename):
+    current_dir = os.path.dirname(__file__)
+    image_path = os.path.join(current_dir, "images", filename)
+    image = Image.open(image_path)
+    photo = ImageTk.PhotoImage(image)
+    return photo
+
 
 #HomeScreen frame
 class HomeScreen(tk.Frame):
@@ -12,15 +28,15 @@ class HomeScreen(tk.Frame):
         super().__init__(parent)
         self.controller = controller
         self.grid(row=0, column=0, sticky='nsew')
-
-        #background_image = Image.open("images/backgroundPic.jpg")
-        #background_image=ImageTk.PhotoImage(background_image)
-        #image_label=tk.Label(self, image=background_image)
-        #image_label.grid(row=0,column=0, sticky='s')
-        #image_label.pack(pady=20)
         
         title_label = tb.Label(self, text="Welcome!", anchor="n", font=('Arial', 30))
         title_label.pack(padx=10, pady=10)
+
+        # background on home screen
+        background_image = display_image("backgroundPic.jpg")
+        background_label = tk.Label(self, image=background_image)
+        background_label.image = background_image
+        background_label.pack(fill="both", expand=True)
         
         #separates title screen from rest of frame
         home_separator = ttk.Separator(self, orient='horizontal')
@@ -189,51 +205,96 @@ class MainScreen(tk.Frame):
         self.controller = controller
         self.grid(row=0, column=0, sticky='nsew')
 
+        self.petState = 0
+        self.pet = sprite.Animal(0)
+        self.image_label = tk.Label(self)
+        self.image_label.grid(row=0, column=1)
+        self.current_img = None
+
+        # Start the animation thread
+        self.stop_animation = False
+        self.is_busy = False
+        threading.Thread(target=self.sprite_animation).start()
+
+        # Setup GUI elements for activities (Play, Feed, Sleep)
         activity_buttons_frame = tk.LabelFrame(self, text="Activity")
         activity_buttons_frame.grid(row=1, column=1, padx=20, pady=(20, 10), sticky='n')
-
-        tb.Button(activity_buttons_frame, text="Play", bootstyle='info', command=lambda: controller.show_frame("PlayScreen"), cursor='hand2').grid(row=0, column=0, sticky='ew')
-        tb.Button(activity_buttons_frame, text="Feed", bootstyle='warning', command=lambda: controller.show_frame("FeedScreen"), cursor='hand2').grid(row=0, column=1, sticky='ew')
-        tb.Button(activity_buttons_frame, text="Sleep", bootstyle='primary', command=lambda: controller.show_frame("SleepScreen"), cursor='hand2').grid(row=0, column=2, sticky='ew')
-
-        tb.Button(self, text="Home", bootstyle='light', command=lambda: controller.show_frame("HomeScreen"),
-                  cursor='hand2').grid(row=2, column=0, sticky='sw', padx=20, pady=20)
+        tb.Button(activity_buttons_frame, text="Play", bootstyle='info',
+                  command=lambda: self.trigger_animation_update(1), cursor='hand2').grid(row=0, column=0, sticky='ew')
+        tb.Button(activity_buttons_frame, text="Feed", bootstyle='warning',
+                  command=lambda: self.trigger_animation_update(2), cursor='hand2').grid(row=0, column=1, sticky='ew')
+        tb.Button(activity_buttons_frame, text="Sleep", bootstyle='primary',
+                  command=lambda: self.trigger_animation_update(3), cursor='hand2').grid(row=0, column=2, sticky='ew')
         
+        # Progress Bars for Animal Statistics
+        health_bars_label = tk.LabelFrame(self, text="Health")
+        health_bars_label.grid(row=0, column=3, sticky='w', padx=10)
+        # 100 seconds for countdown time to run out
+        self.countdown_time = 100
 
-class PlayScreen(tk.Frame):
-    def __init__(self, parent, controller):
-        super().__init__(parent)
-        self.controller = controller
-        self.grid(row=0, column=0, sticky='nsew')
+        #creates happiness bar
+        self.happiness_bar = ttk.Progressbar(health_bars_label, value = 100, style = "info.Striped.TProgressbar", orient="horizontal", length = 200, mode = 'determinate')
+        self.happiness_bar.grid(row=1, column=0, padx=10, pady=5, sticky= 'ew')
+        tk.Label(health_bars_label, text="Happiness").grid(row=0, column=0,padx=10, pady=5, sticky= 'ew')
+        #progress bar starts off full (value of countdown time)
+        self.happiness_bar["maximum"] = self.countdown_time
+        self.happiness_bar["value"] = self.countdown_time
+        app.update_happiness_bar(self.happiness_bar, self.countdown_time)
 
-        tb.Button(self, text="Home", bootstyle='light', command=lambda: controller.show_frame("HomeScreen"),
-                  cursor='hand2').grid(row=2, column=0, sticky='sw', padx=20, pady=20)
-        tb.Button(self, text="Back", bootstyle='secondary', command=lambda: controller.show_frame("MainScreen"),
-                   cursor='hand2').grid(row=2, column=1, sticky='sw', padx=20, pady=20)
+        self.hunger_bar = ttk.Progressbar(health_bars_label, value = 100, style = "warning.Striped.TProgressbar", orient="horizontal", length=200, mode = 'determinate')
+        self.hunger_bar.grid(row=3, column=0, padx=10, pady=5, sticky='ew')
+        tk.Label(health_bars_label, text="Hunger").grid(row=2, column=0,padx=10, pady=5, sticky='ew')
+        self.hunger_bar["maximum"] = self.countdown_time
+        self.hunger_bar["value"] = self.countdown_time
+        app.update_hunger_bar(self.hunger_bar, self.countdown_time)
 
+        self.energy_bar = ttk.Progressbar(health_bars_label,value = 100, style = "primary.Striped.TProgressbar", orient="horizontal", length = 200, mode = 'determinate')
+        self.energy_bar.grid(row=5, column=0, padx=10, pady=5, sticky='ew')
+        tk.Label(health_bars_label, text='Energy').grid(row=4, column=0, padx=10, pady=5, sticky='ew')
+        self.energy_bar["maximum"] = self.countdown_time
+        self.energy_bar["value"] = self.countdown_time
+        app.update_energy_bar(self.energy_bar, self.countdown_time)
+    
+    def trigger_animation_update(self, state):
+        self.petState = state
+        self.is_busy = True
+        if state == 1: 
+            app.add_to_bar(self.happiness_bar, self.happiness_bar["value"], increase=5)
+        elif state == 2:
+            app.add_to_bar(self.hunger_bar, self.hunger_bar["value"], increase=5)
+        elif state == 3:
+            app.add_to_bar(self.energy_bar, self.energy_bar["value"], increase=5)
 
-class FeedScreen(tk.Frame):
-    def __init__(self, parent, controller):
-        super().__init__(parent)
-        self.controller = controller
-        self.grid(row=0, column=0, sticky='nsew')
+    def sprite_animation(self):
+        # Run this in a loop to handle animation
+        while not self.stop_animation:
+            if self.is_busy:
+                self.play_activity_animation()
+                self.is_busy = False
+                self.petState = 0  # Return to idle state
+            else:
+                self.play_idle_animation()
 
-        tb.Button(self, text="Home", bootstyle='light', command=lambda: controller.show_frame("HomeScreen"),
-                  cursor='hand2').grid(row=2, column=0, sticky='sw', padx=20, pady=20)
-        tb.Button(self, text="Back", bootstyle='secondary', command=lambda: controller.show_frame("MainScreen"),
-                   cursor='hand2').grid(row=2, column=1, sticky='sw', padx=20, pady=20)
+    def play_idle_animation(self):
+        for frame_index in range(len(self.pet.frame[0])):  # Loop through idle frames
+            if self.is_busy:
+                break  # Interrupt idle if an activity is triggered
+            self.update_sprite(0, frame_index)
+            time.sleep(0.3)  # Control frame rate
 
+    def play_activity_animation(self):
+        for frame_index in range(len(self.pet.frame[self.petState])):  # Loop through activity frames
+            self.update_sprite(self.petState, frame_index)
+            time.sleep(0.3)  # Control frame rate
 
-class SleepScreen(tk.Frame):
-    def __init__(self, parent, controller):
-        super().__init__(parent)
-        self.controller = controller
-        self.grid(row=0, column=0, sticky='nsew')
+    def update_sprite(self, y, frame_index):
+        # Retrieve and update the image for the current frame
+        frame_image = self.pet.FrameGet(y, frame_index)
+        self.current_img = ImageTk.PhotoImage(frame_image)
+        self.image_label.config(image=self.current_img)
 
-        tb.Button(self, text="Home", bootstyle='light', command=lambda: controller.show_frame("HomeScreen"),
-                  cursor='hand2').grid(row=2, column=0, sticky='sw', padx=20, pady=20)
-        tb.Button(self, text="Back", bootstyle='secondary', command=lambda: controller.show_frame("MainScreen"),
-                   cursor='hand2').grid(row=2, column=1, sticky='sw', padx=20, pady=20)
+    def stop_animation(self):
+        self.stop_animation = True
 
 
 class TomogatchiApp(tk.Tk):
@@ -243,7 +304,7 @@ class TomogatchiApp(tk.Tk):
         self.resizable(False, False)
         
         self.frames = {}
-        for FrameClass in (HomeScreen, SignUpScreen, SaveFileScreen, MainScreen, PlayScreen, FeedScreen, SleepScreen):
+        for FrameClass in (HomeScreen, SignUpScreen, SaveFileScreen, MainScreen):
             frame = FrameClass(self, self)
             self.frames[FrameClass.__name__] = frame
             frame.grid(row=0, column=0, sticky="nsew")
