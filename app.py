@@ -1,57 +1,44 @@
 import tkinter as tk
 from tkinter import ttk
-import customtkinter as ctk
+#import customtkinter as ctk
 from PIL import Image, ImageTk
+import tomogatchiGUI
 
-# Global variable for the countdown
-countdown_time = 1200  # 20 minutes in seconds
+def update_hunger_bar(hunger_bar, countdown_time):
+    if countdown_time > 100:
+        countdown_time = 100
 
-def update_timer():
-    global countdown_time
     if countdown_time > 0:
-        minutes, seconds = divmod(countdown_time, 60)
-        timer_label.config(text=f"{minutes:02}:{seconds:02}")
         countdown_time -= 1
-        # Update timer every 1 second
-        window.after(1000, update_timer)
+        hunger_bar["value"] = countdown_time
+        hunger_bar.after(1000, lambda: update_hunger_bar(hunger_bar, countdown_time))
     else:
-        timer_label.config(text="Time's up!")
+        hunger_bar["value"] = 0
 
-def startFeedingTimer():
-    global countdown_time
-    print("Feeding timer has started")
-    
-    update_timer()  # Start countdown
+def update_happiness_bar(happiness_bar, countdown_time):
+    if countdown_time > 0:
+        countdown_time -= 1
+        happiness_bar["value"] = countdown_time
+        happiness_bar.after(1000, lambda: update_happiness_bar(happiness_bar, countdown_time))
+    else:
+        happiness_bar["value"] = 0
 
-def resetFeedingTimer():
-    global countdown_time
-    print("Feeding timer has been reset")
-    countdown_time = 1200  # Reset to 20 minutes
+def update_energy_bar(energy_bar, countdown_time):
+    if countdown_time > 0:
+        countdown_time -= 1
+        energy_bar["value"] = countdown_time
+        energy_bar.after(1000, lambda: update_energy_bar(energy_bar, countdown_time))
+    else:
+        energy_bar["value"] = 0
 
-# Setup window
-window = tk.Tk()
-window.geometry('600x400')
-window.title('Images')
-
-# Import an image
-image_original = Image.open('Desktop/Projects/DTA/profile_picture/squirrel.jpg')
-image_tk = ImageTk.PhotoImage(image_original)
-
-# Widget 
-label = ttk.Label(window, text="squirrel", image=image_tk)
-label.pack()
-
-# Timer label
-timer_label = ttk.Label(window, text="20:00", font=("Helvetica", 24))
-timer_label.pack()
-
-# Wake pet button (starts the timer)
-wake_button = ttk.Button(window, text="Wake pet", command=startFeedingTimer)
-wake_button.pack()
-
-# Feed me button (resets the timer)
-feed_button = ttk.Button(window, text="feed me", command=resetFeedingTimer)
-feed_button.pack()
-
-# Run the application
-window.mainloop()
+def add_to_bar(health_bar, increase=5):
+    # max value is 100
+    new_value = min(health_bar["valu"] + increase, 100)
+    health_bar["value"] = new_value
+    # Bar style indicates which bar to update
+    if health_bar["style"] == "info.Striped.TProgressbar":
+        update_happiness_bar(health_bar, new_value)
+    elif health_bar["style"] == "warning.Striped.TProgressbar":
+        update_hunger_bar(health_bar, new_value)
+    elif health_bar["style"] == "primary.Striped.TProgressbar":
+        update_energy_bar(health_bar, new_value)
