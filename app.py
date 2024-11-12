@@ -16,6 +16,7 @@ def update_hunger_bar(hunger_bar, countdown_time):
         hunger_bar["value"] = 0
 
 def update_happiness_bar(happiness_bar, countdown_time):
+    print("Updating happiness bar")
     if countdown_time > 0:
         countdown_time -= 1
         happiness_bar["value"] = countdown_time
@@ -33,9 +34,8 @@ def update_energy_bar(energy_bar, countdown_time):
 
 def add_to_bar(health_bar, increase=5):
     # max value is 100
-    new_value = min(health_bar["valu"] + increase, 100)
+    new_value = min(health_bar["value"] + increase, 100)
     health_bar["value"] = new_value
-    # Bar style indicates which bar to update
     if health_bar["style"] == "info.Striped.TProgressbar":
         update_happiness_bar(health_bar, new_value)
     elif health_bar["style"] == "warning.Striped.TProgressbar":
