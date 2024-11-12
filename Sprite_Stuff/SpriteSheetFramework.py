@@ -7,8 +7,8 @@ print(cd)
 critterList = []
 
 #This will change to check every file within file "Sprites" and add to critterList array
-Squirrelsprite = "STS.png"
-crit1 = Image.open(cd + "/SpriteFolder/STS.png")
+Squirrelsprite = "s0.png"
+crit1 = Image.open(cd + "/SpriteFolder/" + Squirrelsprite)
 critterList.append(crit1)
 
 #Animal Class Object
