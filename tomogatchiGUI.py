@@ -76,9 +76,9 @@ class SignUpScreen(tk.Frame):
         self.age_entry = tk.Spinbox(signup_info_frame, from_=1, to=100)
         self.age_entry.grid(row=3, column=0)
         
-        tk.Label(signup_info_frame, text="Birthday").grid(row=2, column=1)
-        self.birthday_entry = tb.DateEntry(signup_info_frame, bootstyle="light")
-        self.birthday_entry.grid(row=3, column=1)
+        tk.Label(signup_info_frame, text="* Password").grid(row=2, column=1)
+        self.password_entry = tk.Entry(signup_info_frame)
+        self.password_entry.grid(row=3, column=1)
         
         for widget in signup_info_frame.winfo_children():
             widget.grid_configure(padx=10, pady=5)
@@ -143,7 +143,7 @@ class SignUpScreen(tk.Frame):
 
 
         def requirements_met():
-            if (self.first_name_entry.get() == "" or self.last_name_entry.get() == "" or self.email_entry.get() == "" or self.animal_entry.get() == "" 
+            if (self.first_name_entry.get() == "" or self.last_name_entry.get() == "" or self.email_entry.get() == ""  or self.password_entry.get() == "" or self.animal_entry.get() == "" 
                 or self.animal_name_entry.get() == "" or not valid_firstname() or not valid_lastname or not  valid_email() or not valid_animal() or not valid_age()):
                if not hasattr(self, 'error_message'):
                 self.error_message = tk.Label(self, text="Please Fill all Required Fields", bg='#fff', fg='red')
@@ -156,10 +156,11 @@ class SignUpScreen(tk.Frame):
                 first_name = self.first_name_entry.get()
                 last_name = self.last_name_entry.get()
                 email = self.email_entry.get()
+                password = self.password_entry.get()
                 animal_name = self.animal_name_entry.get()
                 animal = self.animal_entry.get()
                 age = self.age_entry.get()                    
-                #self.birthday_entry.bind("<<DateEntrySelected>>", self.birthday_entry.get_date())
+            
                 controller.show_frame("SaveFileScreen")
 
         tb.Button(self, text="Home", bootstyle='light', command=lambda: controller.show_frame("HomeScreen"),
@@ -173,6 +174,12 @@ class SaveFileScreen(tk.Frame):
     def __init__(self, parent, controller):
         super().__init__(parent)
         self.controller = controller
+
+        self.rowconfigure(0)
+        self.rowconfigure(1)
+        self.rowconfigure(2)
+        self.columnconfigure(0)
+
         self.grid(row=0, column=0, sticky='nsew')
 
         #currently place holder
@@ -196,7 +203,7 @@ class SaveFileScreen(tk.Frame):
         tk.Label(new_save_frame, text="______").grid(row=0, column=1)
         tk.Label(new_save_frame, text="______").grid(row=1, column=1)
 
-        tb.Button(self, text="Home", bootstyle='light', command=lambda: controller.show_frame("HomeScreen"),
+        tb.Button(self, text="Home", bootstyle='secondary', command=lambda: controller.show_frame("HomeScreen"),
                   cursor='hand2').grid(row=2, column=0, sticky='sw', padx=5, pady=5)
 
 class MainScreen(tk.Frame):
@@ -205,10 +212,17 @@ class MainScreen(tk.Frame):
         self.controller = controller
         self.grid(row=0, column=0, sticky='nsew')
 
+        self.rowconfigure(0, weight=1)
+        self.rowconfigure(1, weight=1)
+        self.rowconfigure(2, weight=1)
+        self.columnconfigure(0, weight=1)
+        self.columnconfigure(1, weight=1)
+        self.columnconfigure(2, weight=1)
+
         self.petState = 0
         self.pet = sprite.Animal(0)
         self.image_label = tk.Label(self)
-        self.image_label.grid(row=0, column=1)
+        self.image_label.grid(row=0, column=0, rowspan=3, sticky="nsw", padx=10, pady=10)
         self.current_img = None
 
         # Start the animation thread
@@ -218,7 +232,7 @@ class MainScreen(tk.Frame):
 
         # Setup GUI elements for activities (Play, Feed, Sleep)
         activity_buttons_frame = tk.LabelFrame(self, text="Activity")
-        activity_buttons_frame.grid(row=1, column=1, padx=20, pady=(20, 10), sticky='n')
+        activity_buttons_frame.grid(row=2, column=2, padx=20, pady=(20, 10), sticky='se')
         tb.Button(activity_buttons_frame, text="Play", bootstyle='info',
                   command=lambda: self.trigger_animation_update(1), cursor='hand2').grid(row=0, column=0, sticky='ew')
         tb.Button(activity_buttons_frame, text="Feed", bootstyle='warning',
@@ -228,13 +242,13 @@ class MainScreen(tk.Frame):
         
         # Progress Bars for Animal Statistics
         health_bars_label = tk.LabelFrame(self, text="Health")
-        health_bars_label.grid(row=0, column=3, sticky='w', padx=10)
+        health_bars_label.grid(row=0, column=2, sticky='ne', padx=10, pady=10)
         # 100 seconds for countdown time to run out
         self.countdown_time = 100
 
         #creates happiness bar
         self.happiness_bar = ttk.Progressbar(health_bars_label, value = 100, style = "info.Striped.TProgressbar", orient="horizontal", length = 200, mode = 'determinate')
-        self.happiness_bar.grid(row=1, column=0, padx=10, pady=5, sticky= 'ew')
+        self.happiness_bar.grid(row=1, column=0, padx=10, pady=5, sticky= 'ne')
         tk.Label(health_bars_label, text="Happiness").grid(row=0, column=0,padx=10, pady=5, sticky= 'ew')
         #progress bar starts off full (value of countdown time)
         self.happiness_bar["maximum"] = self.countdown_time
@@ -254,16 +268,19 @@ class MainScreen(tk.Frame):
         self.energy_bar["maximum"] = self.countdown_time
         self.energy_bar["value"] = self.countdown_time
         app.update_energy_bar(self.energy_bar, self.countdown_time)
+
+        tb.Button(self, text="Home", bootstyle='secondary', 
+                                command=lambda: controller.show_frame("HomeScreen"), cursor='hand2').grid(row=2, column=0, padx=10, pady=10, sticky='sw')
     
     def trigger_animation_update(self, state):
         self.petState = state
         self.is_busy = True
         if state == 1: 
-            app.add_to_bar(self.happiness_bar, self.happiness_bar["value"], increase=5)
+            app.add_to_bar(self.happiness_bar, app.update_happiness_bar)
         elif state == 2:
-            app.add_to_bar(self.hunger_bar, self.hunger_bar["value"], increase=5)
+            app.add_to_bar(self.hunger_bar, app.update_hunger_bar)
         elif state == 3:
-            app.add_to_bar(self.energy_bar, self.energy_bar["value"], increase=5)
+            app.add_to_bar(self.energy_bar, app.update_energy_bar)
 
     def sprite_animation(self):
         # Run this in a loop to handle animation
