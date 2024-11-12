@@ -33,6 +33,18 @@ class LoginPage:
                                       command=self.login)
         self.login_button.grid(row=3, column=0, columnspan=2, pady=30)
 
+        #Register button
+        self.register_button = tk.Button(self.login_frame,
+                                      text="Register",
+                                      highlightthickness=0, 
+                                      bd=0,
+                                      bg="#000000", 
+                                      relief="flat", 
+                                      font=("Arial", 15),
+                                      command=self.login) 
+        self.register_button.grid(row=4, column=0, columnspan=2, pady=30)
+
+
     def login(self):
         # Basic login logic
         username = self.username_entry.get()
