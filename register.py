@@ -1,46 +1,54 @@
-# register.py
 import tkinter as tk
+import os
+from dotenv import load_dotenv
+import pyrebase
+
+load_dotenv()
 
 class RegisterPage:
     def __init__(self, window, on_register_success):
+        firebaseConfig = {
+            'apiKey': os.getenv("FIREBASE_API_KEY"),
+            'authDomain': "petstkinter.firebaseapp.com",
+            'projectId': "petstkinter",
+            'databaseURL': os.getenv("FIREBASE_DATABASE_URL"),
+            'storageBucket': "petstkinter.appspot.com",
+            'messagingSenderId': "597279333277",
+            'appId': "1:597279333277:web:5230058a7fc45fd0216d74"
+        }
+
+        self.firebase = pyrebase.initialize_app(firebaseConfig)
+        self.auth = self.firebase.auth()
+
         self.window = window
         self.on_register_success = on_register_success
         self.register_frame = tk.Frame(window, bg="#000000")
 
         # Register Label
-        self.register_label = tk.Label(self.register_frame, text="Register", bg="#000000", fg="white", font=("Arial", 30))
-        self.register_label.grid(row=0, column=0, columnspan=2, sticky="news", pady=40)
+        tk.Label(self.register_frame, text="Register", bg="#000000", fg="white", font=("Arial", 30)).grid(row=0, column=0, columnspan=2, pady=40)
 
         # Username entry and label
-        self.username_label = tk.Label(self.register_frame, text="Username", bg="#000000", fg="white", font=("Arial", 15))
-        self.username_label.grid(row=1, column=0)
-        self.username_entry = tk.Entry(self.register_frame, highlightthickness=0, bd=0, bg="#000000", fg="white")
+        tk.Label(self.register_frame, text="Username", bg="#000000", fg="white", font=("Arial", 15)).grid(row=1, column=0)
+        self.username_entry = tk.Entry(self.register_frame, bg="#000000", fg="white")
         self.username_entry.grid(row=1, column=1, pady=10)
 
         # Password entry and label
-        self.password_label = tk.Label(self.register_frame, text="Password", bg="#000000", fg="white", font=("Arial", 15))
-        self.password_label.grid(row=2, column=0)
-        self.password_entry = tk.Entry(self.register_frame, show="*", highlightthickness=0, bd=0, bg="#000000", fg="white")
+        tk.Label(self.register_frame, text="Password", bg="#000000", fg="white", font=("Arial", 15)).grid(row=2, column=0)
+        self.password_entry = tk.Entry(self.register_frame, show="*", bg="#000000", fg="white")
         self.password_entry.grid(row=2, column=1, pady=20)
 
         # Register button
-        self.register_button = tk.Button(self.register_frame,
-                                         text="Register",
-                                         highlightthickness=0, 
-                                         bd=0,
-                                         bg="#000000", 
-                                         fg="white",
-                                         relief="flat", 
-                                         font=("Arial", 15),
-                                         command=self.register)
-        self.register_button.grid(row=3, column=0, columnspan=2, pady=30)
+        tk.Button(self.register_frame, text="Register", bg="#000000", fg="white", command=self.register).grid(row=3, column=0, columnspan=2, pady=30)
 
     def register(self):
-        # Placeholder for registration logic
-        username = self.username_entry.get()
+        email = self.username_entry.get()
         password = self.password_entry.get()
-        print(f"Registered username: {username}")
-        self.on_register_success()  # Call back to main app after registration
+        try:
+            self.auth.create_user_with_email_and_password(email, password)
+            print("Registration successful")
+            self.on_register_success()
+        except:
+            print("Email already exists")
 
     def show(self):
         self.register_frame.pack()

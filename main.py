@@ -1,9 +1,15 @@
 import tkinter as tk
 import customtkinter as ctk
-from PIL import Image, ImageTk
 from login import LoginPage
 from petView import petViewPage
 from register import RegisterPage
+import os
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
+firebase_api_key = os.getenv("FIREBASE_API_KEY")
+firebase_database_url = os.getenv("FIREBASE_DATABASE_URL")
 
 class MainApp:
     def __init__(self, window):
@@ -34,8 +40,6 @@ if __name__ == "__main__":
     window = tk.Tk()
     app = MainApp(window)
     window.mainloop()
-
-
 
 
 
