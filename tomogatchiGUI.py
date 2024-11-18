@@ -3,14 +3,13 @@ from tkinter import ttk
 from tkinter import *
 import ttkbootstrap as tb
 from PIL import Image, ImageTk
-import tkinter.font as tkFont
-from datetime import datetime
 import os as os
-import time
-import threading
+import time, threading
 
-import app
+from Sprite_Stuff import spriteFunctions as spf
+import app, accountCreation
 from Sprite_Stuff import SpriteSheetFramework as sprite
+
 cd = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
 # for displaying image on screen with universal file path
@@ -60,15 +59,15 @@ class SignUpScreen(tk.Frame):
         signup_info_frame = tk.LabelFrame(self, text="User Information")
         signup_info_frame.grid(row=0, column=0, padx=20, pady=20, sticky='nsew')
 
-        tk.Label(signup_info_frame, text="* First Name").grid(row=0, column=0)
+        tk.Label(signup_info_frame, text="First Name").grid(row=0, column=0)
         self.first_name_entry = tk.Entry(signup_info_frame)
         self.first_name_entry.grid(row=1, column=0)
         
-        tk.Label(signup_info_frame, text="* Last Name").grid(row=0, column=1)
+        tk.Label(signup_info_frame, text="Last Name").grid(row=0, column=1)
         self.last_name_entry = tk.Entry(signup_info_frame)
         self.last_name_entry.grid(row=1, column=1)
         
-        tk.Label(signup_info_frame, text="* Email").grid(row=0, column=2)
+        tk.Label(signup_info_frame, text="Email").grid(row=0, column=2)
         self.email_entry = tk.Entry(signup_info_frame)
         self.email_entry.grid(row=1, column=2)
 
@@ -76,7 +75,7 @@ class SignUpScreen(tk.Frame):
         self.age_entry = tk.Spinbox(signup_info_frame, from_=1, to=100)
         self.age_entry.grid(row=3, column=0)
         
-        tk.Label(signup_info_frame, text="* Password").grid(row=2, column=1)
+        tk.Label(signup_info_frame, text="Password").grid(row=2, column=1)
         self.password_entry = tk.Entry(signup_info_frame)
         self.password_entry.grid(row=3, column=1)
         
@@ -86,87 +85,31 @@ class SignUpScreen(tk.Frame):
         animal_selection_frame = tk.LabelFrame(self, text="Animal")
         animal_selection_frame.grid(row=1, column=0, sticky="news", padx=20, pady=20)
 
-        tk.Label(animal_selection_frame, text="* Select Animal").grid(row=0, column=0)
+        tk.Label(animal_selection_frame, text="Select Animal").grid(row=0, column=0)
         self.animal_entry = ttk.Combobox(animal_selection_frame, values=["Squirrel"])
         self.animal_entry.grid(row=1, column=0)
         
-        tk.Label(animal_selection_frame, text="* Animal's Name").grid(row=0, column=2)
+        tk.Label(animal_selection_frame, text="Animal's Name").grid(row=0, column=2)
         self.animal_name_entry = tk.Entry(animal_selection_frame)
         self.animal_name_entry.grid(row=1, column=2)
 
         for widget in animal_selection_frame.winfo_children():
             widget.grid_configure(padx=10, pady=5)
         
-        def valid_firstname():
-            try:
-                first_name = str(self.first_name_entry.get())
-                return True
-            except ValueError:
-                return False
-            
-        def valid_lastname():
-            try:
-                last_name = str(self.last_name_entry.get())
-                return True
-            except ValueError:
-                return False
-        
-        def valid_email():
-            try:
-                email = str(self.email_entry.get())
-                if "@" and "." in email:
-                    return True
-                else:
-                    return False
-            except ValueError:
-                return False
-
-        def valid_age():
-            try:
-                age = int(self.age_entry.get())
-                if age > 0:
-                    return True
-                else:
-                    return False
-            except ValueError:
-                return False
-            
-        def valid_animal():
-            try:
-                animal = str(self.animal_entry.get())
-                if animal.lower() == 'squirrel':
-                    return True
-                else:
-                    return False
-            except ValueError:
-                return False
-
-
-        def requirements_met():
-            if (self.first_name_entry.get() == "" or self.last_name_entry.get() == "" or self.email_entry.get() == ""  or self.password_entry.get() == "" or self.animal_entry.get() == "" 
-                or self.animal_name_entry.get() == "" or not valid_firstname() or not valid_lastname or not  valid_email() or not valid_animal() or not valid_age()):
-               if not hasattr(self, 'error_message'):
-                self.error_message = tk.Label(self, text="Please Fill all Required Fields", bg='#fff', fg='red')
-                self.error_message.grid(row=2, column=0, sticky='n', pady=(5,0))
-            else:
-                
-                if hasattr(self, 'error_message'):
-                    self.error_message.grid_forget()
-                
-                first_name = self.first_name_entry.get()
-                last_name = self.last_name_entry.get()
-                email = self.email_entry.get()
-                password = self.password_entry.get()
-                animal_name = self.animal_name_entry.get()
-                animal = self.animal_entry.get()
-                age = self.age_entry.get()                    
-            
-                controller.show_frame("SaveFileScreen")
+        accountCreation.valid_firstname(self.first_name_entry)
+        accountCreation.valid_lastname(self.last_name_entry)
+        accountCreation.valid_password(self.password_entry)
+        accountCreation.valid_email(self.email_entry)
+        accountCreation.valid_age(self.age_entry)
+        accountCreation.valid_animal(self.animal_entry)
+        accountCreation.valid_animal_name(self.animal_name_entry)
+        accountCreation.valid_requirements(self.first_name_entry, self.last_name_entry, self.password_entry, self.email_entry, self.animal_entry, self.animal_name_entry, self.age_entry)
 
         tb.Button(self, text="Home", bootstyle='light', command=lambda: controller.show_frame("HomeScreen"),
                   cursor='hand2').grid(row=2, column=0, sticky='sw', padx=5, pady=5)
         
-        tb.Button(self, text="Create Account", bootstyle='success', command=requirements_met,
+        tb.Button(self, text="Create Account", bootstyle='success', command = lambda: accountCreation.requirements_met(self, controller, self.first_name_entry, self.last_name_entry,
+                    self.password_entry, self.email_entry, self.animal_entry, self.animal_name_entry, self.age_entry),
                   cursor='hand2').grid(row=2, column=0, sticky='se', padx=5, pady=5)
 
 #savefile screen frame
@@ -228,17 +171,17 @@ class MainScreen(tk.Frame):
         # Start the animation thread
         self.stop_animation = False
         self.is_busy = False
-        threading.Thread(target=self.sprite_animation).start()
+        threading.Thread(target = lambda: spf.sprite_animation(self)).start()
 
         # Setup GUI elements for activities (Play, Feed, Sleep)
         activity_buttons_frame = tk.LabelFrame(self, text="Activity")
         activity_buttons_frame.grid(row=2, column=2, padx=20, pady=(20, 10), sticky='se')
         tb.Button(activity_buttons_frame, text="Play", bootstyle='info',
-                  command=lambda: self.trigger_animation_update(1), cursor='hand2').grid(row=0, column=0, sticky='ew')
+                  command=lambda: spf.trigger_animation_update(self, 1), cursor='hand2').grid(row=0, column=0, sticky='ew')
         tb.Button(activity_buttons_frame, text="Feed", bootstyle='warning',
-                  command=lambda: self.trigger_animation_update(2), cursor='hand2').grid(row=0, column=1, sticky='ew')
+                  command=lambda: spf.trigger_animation_update(self, 2), cursor='hand2').grid(row=0, column=1, sticky='ew')
         tb.Button(activity_buttons_frame, text="Sleep", bootstyle='primary',
-                  command=lambda: self.trigger_animation_update(3), cursor='hand2').grid(row=0, column=2, sticky='ew')
+                  command=lambda: spf.trigger_animation_update(self, 3), cursor='hand2').grid(row=0, column=2, sticky='ew')
         
         # Progress Bars for Animal Statistics
         health_bars_label = tk.LabelFrame(self, text="Health")
@@ -272,47 +215,6 @@ class MainScreen(tk.Frame):
         tb.Button(self, text="Home", bootstyle='secondary', 
                                 command=lambda: controller.show_frame("HomeScreen"), cursor='hand2').grid(row=2, column=0, padx=10, pady=10, sticky='sw')
     
-    def trigger_animation_update(self, state):
-        self.petState = state
-        self.is_busy = True
-        if state == 1: 
-            app.add_to_bar(self.happiness_bar, app.update_happiness_bar)
-        elif state == 2:
-            app.add_to_bar(self.hunger_bar, app.update_hunger_bar)
-        elif state == 3:
-            app.add_to_bar(self.energy_bar, app.update_energy_bar)
-
-    def sprite_animation(self):
-        # Run this in a loop to handle animation
-        while not self.stop_animation:
-            if self.is_busy:
-                self.play_activity_animation()
-                self.is_busy = False
-                self.petState = 0  # Return to idle state
-            else:
-                self.play_idle_animation()
-
-    def play_idle_animation(self):
-        for frame_index in range(len(self.pet.frame[0])):  # Loop through idle frames
-            if self.is_busy:
-                break  # Interrupt idle if an activity is triggered
-            self.update_sprite(0, frame_index)
-            time.sleep(0.3)  # Control frame rate
-
-    def play_activity_animation(self):
-        for frame_index in range(len(self.pet.frame[self.petState])):  # Loop through activity frames
-            self.update_sprite(self.petState, frame_index)
-            time.sleep(0.3)  # Control frame rate
-
-    def update_sprite(self, y, frame_index):
-        # Retrieve and update the image for the current frame
-        frame_image = self.pet.FrameGet(y, frame_index)
-        self.current_img = ImageTk.PhotoImage(frame_image)
-        self.image_label.config(image=self.current_img)
-
-    def stop_animation(self):
-        self.stop_animation = True
-
 
 class TomogatchiApp(tk.Tk):
     def __init__(self):
