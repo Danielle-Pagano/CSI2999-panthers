@@ -1,10 +1,12 @@
 import tkinter as tk
 from tkinter import ttk
 from tkinter import *
+from tkinter.font import Font
 import ttkbootstrap as tb
-from PIL import Image, ImageTk
+from PIL import Image, ImageTk, ImageFont
 import os as os
 import time, threading
+
 
 from Sprite_Stuff import spriteFunctions as spf
 import app, accountCreation
@@ -20,6 +22,15 @@ def display_image(filename):
     photo = ImageTk.PhotoImage(image)
     return photo
 
+def import_custom_font(filename, font_size):
+    current_dir = os.path.dirname(__file__)
+    font_path = os.path.join(current_dir, "fonts", filename)
+    
+    if not os.path.isfile(font_path):
+        raise FileNotFoundError(f"Font file not found: {font_path}")
+       
+    else:
+         return Font(family="SemiBold.ttf", size=font_size) 
 
 #HomeScreen frame
 class HomeScreen(tk.Frame):
@@ -27,8 +38,9 @@ class HomeScreen(tk.Frame):
         super().__init__(parent)
         self.controller = controller
         self.grid(row=0, column=0, sticky='nsew')
-        
-        title_label = tb.Label(self, text="Welcome!", anchor="n", font=('Arial', 30))
+
+        semibold_font = import_custom_font("SemiBold.ttf", 30)
+        title_label = tb.Label(self, text="Tomogatchi", anchor="n", font=semibold_font)
         title_label.pack(padx=10, pady=10)
 
         # background on home screen
@@ -173,15 +185,21 @@ class MainScreen(tk.Frame):
         self.is_busy = False
         threading.Thread(target = lambda: spf.sprite_animation(self)).start()
 
+        self.sleep_icon = display_image("button_icons/sleep_button.png")
+        self.eat_icon = display_image("button_icons/eat_button.png")
+        self.play_icon = display_image("button_icons/play_button.png")
+
+        self.style = ttk.Style()
+        self.style.configure("Custom.TBUtton", background="white", borderwidth=0,focuscolor="none", padding=5)
+
         # Setup GUI elements for activities (Play, Feed, Sleep)
         activity_buttons_frame = tk.LabelFrame(self, text="Activity")
         activity_buttons_frame.grid(row=2, column=2, padx=20, pady=(20, 10), sticky='se')
-        tb.Button(activity_buttons_frame, text="Play", bootstyle='info',
+        ttk.Button(activity_buttons_frame, text="Play", image = self.play_icon, style="Custom.TButton",
                   command=lambda: spf.trigger_animation_update(self, 1), cursor='hand2').grid(row=0, column=0, sticky='ew')
-        tb.Button(activity_buttons_frame, text="Feed", bootstyle='warning',
+        ttk.Button(activity_buttons_frame, text="Feed", image = self.eat_icon,style="Custom.TButton",
                   command=lambda: spf.trigger_animation_update(self, 2), cursor='hand2').grid(row=0, column=1, sticky='ew')
-        tb.Button(activity_buttons_frame, text="Sleep", bootstyle='primary',
-                  command=lambda: spf.trigger_animation_update(self, 3), cursor='hand2').grid(row=0, column=2, sticky='ew')
+        ttk.Button(activity_buttons_frame, text="Sleep", image = self.sleep_icon,style="Custom.TButton",                  command=lambda: spf.trigger_animation_update(self, 3), cursor='hand2').grid(row=0, column=2, sticky='ew')
         
         # Progress Bars for Animal Statistics
         health_bars_label = tk.LabelFrame(self, text="Health")
