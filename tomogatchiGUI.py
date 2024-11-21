@@ -8,7 +8,7 @@ import os as os
 import time, threading
 
 
-from Sprite_Stuff import spriteFunctions as spf
+import spriteFunctions as spf
 import app, accountCreation
 from Sprite_Stuff import SpriteSheetFramework as sprite
 
