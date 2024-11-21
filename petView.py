@@ -7,7 +7,7 @@ class petViewPage:
         self.frame = tk.Frame(window, bg="#000000")
 
         # Load the GIF frames
-        idle_squirrel = "/Users/ggvhs/Desktop/Projects/pets/pets/images/idle_Squirrel.gif"
+        idle_squirrel = "/Users/ggvhs/Desktop/Projects/pets/images/idle_Squirrel.gif"
         info = Image.open(idle_squirrel)
 
         # Retrieve the number of frames

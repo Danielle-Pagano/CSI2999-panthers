@@ -23,26 +23,30 @@ class LoginPage:
         self.window = window
         self.on_login_success = on_login_success
         self.show_register_page = show_register_page
+
+        # Set the window's background color to black
+        self.window.configure(bg="#000000")
+        
         self.login_frame = tk.Frame(window, bg="#000000")
 
         # Login Label
-        tk.Label(self.login_frame, text="Login", bg="#000000", font=("Arial", 30)).grid(row=0, column=0, columnspan=2, pady=40)
+        tk.Label(self.login_frame, text="Login", bg="#000000", font=("Arial", 30), fg="white").grid(row=0, column=0, columnspan=2, pady=40)
 
         # Username entry and label
-        tk.Label(self.login_frame, text="Username", bg="#000000", font=("Arial", 15)).grid(row=1, column=0)
+        tk.Label(self.login_frame, text="Username", bg="#000000", font=("Arial", 15), fg="white").grid(row=1, column=0)
         self.username_entry = tk.Entry(self.login_frame, bg="#000000", fg="white")
         self.username_entry.grid(row=1, column=1, pady=10)
 
         # Password entry and label
-        tk.Label(self.login_frame, text="Password", bg="#000000", font=("Arial", 15)).grid(row=2, column=0)
+        tk.Label(self.login_frame, text="Password", bg="#000000", font=("Arial", 15), fg="white").grid(row=2, column=0)
         self.password_entry = tk.Entry(self.login_frame, show="*", bg="#000000", fg="white")
         self.password_entry.grid(row=2, column=1, pady=20)
 
         # Login button
-        tk.Button(self.login_frame, text="Login", bg="#000000", command=self.login).grid(row=3, column=0, columnspan=2, pady=10)
+        tk.Button(self.login_frame, text="Login", bg="#000000", fg="black", command=self.login).grid(row=3, column=0, columnspan=2, pady=10)
 
         # Register button
-        tk.Button(self.login_frame, text="Register", bg="#000000", command=self.show_register_page).grid(row=4, column=0, columnspan=2, pady=10)
+        tk.Button(self.login_frame, text="Register", bg="#000000", fg="black", command=self.show_register_page).grid(row=4, column=0, columnspan=2, pady=10)
 
     def login(self):
         email = self.username_entry.get()
