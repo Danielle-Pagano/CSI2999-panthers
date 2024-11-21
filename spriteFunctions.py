@@ -33,7 +33,7 @@ def play_idle_animation(self):
 def play_activity_animation(self):
     for frame_index in range(len(self.pet.frame[self.petState])):  # Loop through activity frames
         update_sprite(self, self.petState, frame_index)
-        time.sleep(0.3)  # Control frame rate
+        time.sleep(0.2)  # Control frame rate
 
 def update_sprite(self, y, frame_index):
     # Retrieve and update the image for the current frame
