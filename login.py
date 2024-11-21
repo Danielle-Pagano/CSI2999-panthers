@@ -48,15 +48,21 @@ class LoginPage:
         # Register button
         tk.Button(self.login_frame, text="Register", bg="#000000", fg="black", command=self.show_register_page).grid(row=4, column=0, columnspan=2, pady=10)
 
+       # Login Status label
+        self.login_status_label = tk.Label(self.login_frame, text="", bg="#000000", font=("Arial", 12), fg="red")
+        self.login_status_label.grid(row=5, column=0, columnspan=2)
+
     def login(self):
         email = self.username_entry.get()
         password = self.password_entry.get()
         try:
             self.auth.sign_in_with_email_and_password(email, password)
             print("Login successful")
+            self.login_status_label.config(text="Login successful", fg="green")
             self.on_login_success()
         except:
             print("Invalid email or password")
+            self.login_status_label.config(text="Invalid email or password", fg="red")
 
     def show(self):
         self.login_frame.pack()
