@@ -38,7 +38,7 @@ class RegisterPage:
         self.password_entry.grid(row=2, column=1, pady=20)
 
         # Register button
-        tk.Button(self.register_frame, text="Register", bg="#000000", fg="white", command=self.register).grid(row=3, column=0, columnspan=2, pady=30)
+        tk.Button(self.register_frame, text="Register", bg="#000000", fg="black", command=self.register).grid(row=3, column=0, columnspan=2, pady=30)
 
     def register(self):
         email = self.username_entry.get()

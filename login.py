@@ -55,6 +55,11 @@ class LoginPage:
     def login(self):
         email = self.username_entry.get()
         password = self.password_entry.get()
+
+        if not email or not password:
+            self.login_status_label.config(text="Both fields are required", fg="red")
+            return
+        
         try:
             self.auth.sign_in_with_email_and_password(email, password)
             print("Login successful")
