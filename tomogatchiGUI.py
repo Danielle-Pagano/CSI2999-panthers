@@ -15,12 +15,13 @@ from Sprite_Stuff import SpriteSheetFramework as sprite
 cd = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
 # for displaying image on screen with universal file path
-def display_image(filename):
+def display_image(filename, size=None):
     current_dir = os.path.dirname(__file__)
     image_path = os.path.join(current_dir, "images", filename)
     image = Image.open(image_path)
-    photo = ImageTk.PhotoImage(image)
-    return photo
+    if size:
+        image = image.resize(size, Image.Resampling.LANCZOS)
+    return ImageTk.PhotoImage(image)
 
 def import_custom_font(filename, font_size):
     current_dir = os.path.dirname(__file__)
@@ -165,73 +166,101 @@ class MainScreen(tk.Frame):
     def __init__(self, parent, controller):
         super().__init__(parent)
         self.controller = controller
-        self.grid(row=0, column=0, sticky='nsew')
-
-        self.rowconfigure(0, weight=1)
-        self.rowconfigure(1, weight=1)
-        self.rowconfigure(2, weight=1)
-        self.columnconfigure(0, weight=1)
-        self.columnconfigure(1, weight=1)
-        self.columnconfigure(2, weight=1)
+        self.place(relwidth=1, relheight=1) 
 
         self.petState = 0
         self.pet = sprite.Animal(0)
         self.image_label = tk.Label(self)
-        self.image_label.grid(row=0, column=0, rowspan=3, sticky="nsw", padx=10, pady=10)
+        self.image_label.place(x=100, y=50)
         self.current_img = None
 
         # Start the animation thread
         self.stop_animation = False
         self.is_busy = False
-        threading.Thread(target = lambda: spf.sprite_animation(self)).start()
+        threading.Thread(target=lambda: spf.sprite_animation(self)).start()
 
-        self.sleep_icon = display_image("button_icons/sleep_button.png")
-        self.eat_icon = display_image("button_icons/eat_button.png")
-        self.play_icon = display_image("button_icons/play_button.png")
+        # Load button icons
+        self.new_size = (60,60)
+        self.sleep_icon = display_image("button_icons/sleep_button.png", size=self.new_size)
+        self.eat_icon = display_image("button_icons/eat_button.png", size=self.new_size)
+        self.play_icon = display_image("button_icons/play_button.png", size=self.new_size)
+        self.home_icon = display_image("button_icons/home_button.png", size=self.new_size)
 
-        self.style = ttk.Style()
-        self.style.configure("Custom.TBUtton", background="white", borderwidth=0,focuscolor="none", padding=5)
+        # Menu Label
+        self.menu_label = tk.Label(self,text="Menu", font=('Helvetica',15), borderwidth=2, relief="solid").place(relwidth=1, x=0, y=200, height=40)
 
-        # Setup GUI elements for activities (Play, Feed, Sleep)
-        activity_buttons_frame = tk.LabelFrame(self, text="Activity")
-        activity_buttons_frame.grid(row=2, column=2, padx=20, pady=(20, 10), sticky='se')
-        ttk.Button(activity_buttons_frame, text="Play", image = self.play_icon, style="Custom.TButton",
-                  command=lambda: spf.trigger_animation_update(self, 1), cursor='hand2').grid(row=0, column=0, sticky='ew')
-        ttk.Button(activity_buttons_frame, text="Feed", image = self.eat_icon,style="Custom.TButton",
-                  command=lambda: spf.trigger_animation_update(self, 2), cursor='hand2').grid(row=0, column=1, sticky='ew')
-        ttk.Button(activity_buttons_frame, text="Sleep", image = self.sleep_icon,style="Custom.TButton",                  command=lambda: spf.trigger_animation_update(self, 3), cursor='hand2').grid(row=0, column=2, sticky='ew')
-        
-        # Progress Bars for Animal Statistics
-        health_bars_label = tk.LabelFrame(self, text="Health")
-        health_bars_label.grid(row=0, column=2, sticky='ne', padx=10, pady=10)
-        # 100 seconds for countdown time to run out
-        self.countdown_time = 100
+        # Activity buttons frame
+        # activity_buttons_frame = tk.LabelFrame(self, text="Activity")
+        # activity_buttons_frame.place(x=10, y=250, width=200, height=100)
 
-        #creates happiness bar
-        self.happiness_bar = ttk.Progressbar(health_bars_label, value = 100, style = "info.Striped.TProgressbar", orient="horizontal", length = 200, mode = 'determinate')
-        self.happiness_bar.grid(row=1, column=0, padx=10, pady=5, sticky= 'ne')
-        tk.Label(health_bars_label, text="Happiness").grid(row=0, column=0,padx=10, pady=5, sticky= 'ew')
-        #progress bar starts off full (value of countdown time)
-        self.happiness_bar["maximum"] = self.countdown_time
-        self.happiness_bar["value"] = self.countdown_time
-        app.update_happiness_bar(self.happiness_bar, self.countdown_time)
+        # Buttons inside the activity frame
+        tk.Button(
+            self,
+            image=self.play_icon,
+            bg="white",
+            command=lambda: spf.trigger_animation_update(self, 1),
+            cursor='hand2'
+        ).place(x=20, y=255)
 
-        self.hunger_bar = ttk.Progressbar(health_bars_label, value = 100, style = "warning.Striped.TProgressbar", orient="horizontal", length=200, mode = 'determinate')
-        self.hunger_bar.grid(row=3, column=0, padx=10, pady=5, sticky='ew')
-        tk.Label(health_bars_label, text="Hunger").grid(row=2, column=0,padx=10, pady=5, sticky='ew')
-        self.hunger_bar["maximum"] = self.countdown_time
-        self.hunger_bar["value"] = self.countdown_time
-        app.update_hunger_bar(self.hunger_bar, self.countdown_time)
+        tk.Button(
+            self,
+            image=self.eat_icon,
+            bg="white",
+            command=lambda: spf.trigger_animation_update(self, 2),
+            cursor='hand2'
+        ).place(x=90, y=255)
 
-        self.energy_bar = ttk.Progressbar(health_bars_label,value = 100, style = "primary.Striped.TProgressbar", orient="horizontal", length = 200, mode = 'determinate')
-        self.energy_bar.grid(row=5, column=0, padx=10, pady=5, sticky='ew')
-        tk.Label(health_bars_label, text='Energy').grid(row=4, column=0, padx=10, pady=5, sticky='ew')
-        self.energy_bar["maximum"] = self.countdown_time
-        self.energy_bar["value"] = self.countdown_time
-        app.update_energy_bar(self.energy_bar, self.countdown_time)
+        tk.Button(
+            self,
+            image=self.sleep_icon,
+            bg="white",
+            command=lambda: spf.trigger_animation_update(self, 3),
+            cursor='hand2'
+        ).place(x=90, y=325)
 
-        tb.Button(self, text="Home", bootstyle='secondary', 
-                                command=lambda: controller.show_frame("HomeScreen"), cursor='hand2').grid(row=2, column=0, padx=10, pady=10, sticky='sw')
+        #Home button at the bottom-left corner
+        tk.Button(
+            self,
+            image=self.home_icon,
+            bg="white",
+            command=lambda: controller.show_frame("HomeScreen"),
+            cursor='hand2').place(x=20, y=325)
+
+        # # Progress bars frame
+        # health_bars_label = tk.LabelFrame(self, text="Health")
+        # health_bars_label.place(x=400, y=10, width=250, height=150)  # Position on the top-right
+
+        # self.countdown_time = 100
+
+        # # Happiness bar
+        # tk.Label(health_bars_label, text="Happiness").place(x=10, y=10)
+        # self.happiness_bar = ttk.Progressbar(
+        #     health_bars_label, value=100, orient="horizontal", length=200, mode='determinate'
+        # )
+        # self.happiness_bar.place(x=10, y=30)
+        # self.happiness_bar["maximum"] = self.countdown_time
+        # self.happiness_bar["value"] = self.countdown_time
+        # app.update_happiness_bar(self.happiness_bar, self.countdown_time)
+
+        # # Hunger bar
+        # tk.Label(health_bars_label, text="Hunger").place(x=10, y=60)
+        # self.hunger_bar = ttk.Progressbar(
+        #     health_bars_label, value=100, orient="horizontal", length=200, mode='determinate'
+        # )
+        # self.hunger_bar.place(x=10, y=80)
+        # self.hunger_bar["maximum"] = self.countdown_time
+        # self.hunger_bar["value"] = self.countdown_time
+        # app.update_hunger_bar(self.hunger_bar, self.countdown_time)
+
+        # # Energy bar
+        # tk.Label(health_bars_label, text="Energy").place(x=10, y=110)
+        # self.energy_bar = ttk.Progressbar(
+        #     health_bars_label, value=100, orient="horizontal", length=200, mode='determinate'
+        # )
+        # self.energy_bar.place(x=10, y=130)
+        # self.energy_bar["maximum"] = self.countdown_time
+        # self.energy_bar["value"] = self.countdown_time
+        # app.update_energy_bar(self.energy_bar, self.countdown_time)
     
 
 class TomogatchiApp(tk.Tk):
