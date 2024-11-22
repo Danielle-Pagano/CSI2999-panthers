@@ -40,15 +40,36 @@ class RegisterPage:
         # Register button
         tk.Button(self.register_frame, text="Register", bg="#000000", fg="black", command=self.register).grid(row=3, column=0, columnspan=2, pady=30)
 
+         # Label for displaying success/failure messages
+        self.status_label = tk.Label(self.register_frame, text="", bg="#000000", fg="white", bd=0, highlightthickness=0, font=("Arial", 12))
+        self.status_label.grid(row=3, column=1, pady=20)
+
     def register(self):
-        email = self.username_entry.get()
-        password = self.password_entry.get()
-        try:
-            self.auth.create_user_with_email_and_password(email, password)
-            print("Registration successful")
-            self.on_register_success()
-        except:
-            print("Email already exists")
+       email = self.username_entry.get()
+       password = self.password_entry.get()
+      
+       # Check for empty fields
+       if not email or not password:
+           print("Please enter both email and password.")
+           return
+      
+       try:
+           # Attempt to create a new user
+           self.auth.create_user_with_email_and_password(email, password)
+           print("Registration successful")
+           self.on_register_success()
+           self.status_label.config(text="Register Successful!", fg="green")
+       except Exception as e:
+           # Capture the error and print a specific message for "EMAIL_EXISTS"
+           error_message = str(e)
+           if "EMAIL_EXISTS" in error_message:
+               print("This email is already registered. Please use a different email.")
+               self.status_label.config(text="This email is already registered. Please use a different email.", fg="red")
+           else:
+               print(f"An error occurred: {error_message}")
+               self.status_label.config(text=f"An error occured: {error_message}", fg="red")
+              
+
 
     def show(self):
         self.register_frame.pack()

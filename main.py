@@ -19,13 +19,14 @@ class MainApp:
         # Initialize pages
         self.login_page = LoginPage(self.window, self.show_petview, self.show_register)
         self.petview_page = petViewPage(self.window)
-        self.register_page = RegisterPage(self.window, self.show_login)
+        self.register_page = RegisterPage(self.window, self.show_petview)
 
         # Start with the login page
         self.login_page.show()
 
     def show_petview(self):
         self.login_page.hide()
+        self.register_page.hide()
         self.petview_page.show()
     
     def show_register(self):
