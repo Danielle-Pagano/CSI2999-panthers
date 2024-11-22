@@ -8,7 +8,7 @@ import os as os
 import time, threading
 
 
-from Sprite_Stuff import spriteFunctions as spf
+import spriteFunctions as spf
 import app, accountCreation
 from Sprite_Stuff import SpriteSheetFramework as sprite
 
@@ -168,10 +168,11 @@ class MainScreen(tk.Frame):
         self.controller = controller
         self.place(relwidth=1, relheight=1) 
 
+        # Setting up animation and label
         self.petState = 0
-        self.pet = sprite.Animal(0)
+        self.pet = sprite.Animal(1)
         self.image_label = tk.Label(self)
-        self.image_label.place(x=100, y=50)
+        self.image_label.place(x=200, y=50)
         self.current_img = None
 
         # Start the animation thread
@@ -181,86 +182,116 @@ class MainScreen(tk.Frame):
 
         # Load button icons
         self.new_size = (60,60)
-        self.sleep_icon = display_image("button_icons/sleep_button.png", size=self.new_size)
-        self.eat_icon = display_image("button_icons/eat_button.png", size=self.new_size)
-        self.play_icon = display_image("button_icons/play_button.png", size=self.new_size)
-        self.home_icon = display_image("button_icons/home_button.png", size=self.new_size)
+        self.tb_size = (42,42)
+        self.sleep_icon = display_image("button_icons/sleep_button.png", size=self.tb_size)
+        self.eat_icon = display_image("button_icons/eat_button.png", size=self.tb_size)
+        self.play_icon = display_image("button_icons/play_button.png", size=self.tb_size)
+        self.home_icon = display_image("button_icons/home_button.png", size=self.tb_size)
+
+        # Name label
+        self.name_label = tk.Label(self, text="Pets's Name", font=("Helvetica",15)).place(relwidth=1,x=0,y=0,height=30)
 
         # Menu Label
         self.menu_label = tk.Label(self,text="Menu", font=('Helvetica',15), borderwidth=2, relief="solid").place(relwidth=1, x=0, y=200, height=40)
 
-        # Activity buttons frame
-        # activity_buttons_frame = tk.LabelFrame(self, text="Activity")
-        # activity_buttons_frame.place(x=10, y=250, width=200, height=100)
 
         # Buttons inside the activity frame
-        tk.Button(
+        tb.Button(
             self,
             image=self.play_icon,
-            bg="white",
+            bootstyle="primary",
             command=lambda: spf.trigger_animation_update(self, 1),
             cursor='hand2'
-        ).place(x=20, y=255)
+        ).place(x=35, y=258)
 
-        tk.Button(
+        tb.Button(
             self,
             image=self.eat_icon,
-            bg="white",
+            bootstyle="success",
             command=lambda: spf.trigger_animation_update(self, 2),
             cursor='hand2'
-        ).place(x=90, y=255)
+        ).place(x=110, y=258)
 
-        tk.Button(
+        tb.Button(
             self,
             image=self.sleep_icon,
-            bg="white",
+            bootstyle="warning",
             command=lambda: spf.trigger_animation_update(self, 3),
             cursor='hand2'
-        ).place(x=90, y=325)
+        ).place(x=110, y=322)
 
         #Home button at the bottom-left corner
-        tk.Button(
+        tb.Button(
             self,
             image=self.home_icon,
-            bg="white",
+            bootstyle='secondary',
             command=lambda: controller.show_frame("HomeScreen"),
-            cursor='hand2').place(x=20, y=325)
+            cursor='hand2').place(x=35, y=322)
 
-        # # Progress bars frame
-        # health_bars_label = tk.LabelFrame(self, text="Health")
-        # health_bars_label.place(x=400, y=10, width=250, height=150)  # Position on the top-right
+        self.countdown_time = 100
 
-        # self.countdown_time = 100
+        # Happiness bar
+        tk.Label(
+            self,
+            text="Happiness",
+            font="Consolas"
+            ).place(x=390, y=242)
+        
+        self.happiness_bar = tb.Progressbar(
+            self,
+            value=100,
+            orient="horizontal",
+            bootstyle="warning-striped",
+            length=200, 
+            mode='determinate'
+            )
+        self.happiness_bar.place(x=325, y=265)
+        
+        self.happiness_bar["maximum"] = self.countdown_time
+        self.happiness_bar["value"] = self.countdown_time
+        app.update_happiness_bar(self.happiness_bar, self.countdown_time)
 
-        # # Happiness bar
-        # tk.Label(health_bars_label, text="Happiness").place(x=10, y=10)
-        # self.happiness_bar = ttk.Progressbar(
-        #     health_bars_label, value=100, orient="horizontal", length=200, mode='determinate'
-        # )
-        # self.happiness_bar.place(x=10, y=30)
-        # self.happiness_bar["maximum"] = self.countdown_time
-        # self.happiness_bar["value"] = self.countdown_time
-        # app.update_happiness_bar(self.happiness_bar, self.countdown_time)
+        # Hunger bar
+        tk.Label(
+            self,
+            text="Hunger",
+            font="Consolas"
+            ).place(x=395, y=292)
+        
+        self.hunger_bar = tb.Progressbar(
+            self,
+            value=100,
+            orient="horizontal",
+            bootstyle="success-striped",
+            length=200, 
+            mode='determinate'
+            )
+        self.hunger_bar.place(x=325, y=315)
+        
+        self.hunger_bar["maximum"] = self.countdown_time
+        self.hunger_bar["value"] = self.countdown_time
+        app.update_hunger_bar(self.hunger_bar, self.countdown_time)
 
-        # # Hunger bar
-        # tk.Label(health_bars_label, text="Hunger").place(x=10, y=60)
-        # self.hunger_bar = ttk.Progressbar(
-        #     health_bars_label, value=100, orient="horizontal", length=200, mode='determinate'
-        # )
-        # self.hunger_bar.place(x=10, y=80)
-        # self.hunger_bar["maximum"] = self.countdown_time
-        # self.hunger_bar["value"] = self.countdown_time
-        # app.update_hunger_bar(self.hunger_bar, self.countdown_time)
-
-        # # Energy bar
-        # tk.Label(health_bars_label, text="Energy").place(x=10, y=110)
-        # self.energy_bar = ttk.Progressbar(
-        #     health_bars_label, value=100, orient="horizontal", length=200, mode='determinate'
-        # )
-        # self.energy_bar.place(x=10, y=130)
-        # self.energy_bar["maximum"] = self.countdown_time
-        # self.energy_bar["value"] = self.countdown_time
-        # app.update_energy_bar(self.energy_bar, self.countdown_time)
+        # Energy bar
+        tk.Label(
+            self,
+            text="Energy",
+            font="Consolas"
+            ).place(x=395, y=342)
+        
+        self.energy_bar = ttk.Progressbar(
+            self,
+            value=100,
+            orient="horizontal",
+            bootstyle="primary-striped",
+            length=200,
+            mode='determinate'
+            )
+        self.energy_bar.place(x=325, y=365)
+        
+        self.energy_bar["maximum"] = self.countdown_time
+        self.energy_bar["value"] = self.countdown_time
+        app.update_energy_bar(self.energy_bar, self.countdown_time)
     
 
 class TomogatchiApp(tk.Tk):
