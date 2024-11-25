@@ -25,51 +25,84 @@ class RegisterPage:
         self.register_frame = tk.Frame(window, bg="#000000")
 
         # Register Label
-        tk.Label(self.register_frame, text="Register", bg="#000000", fg="white", font=("Arial", 30)).grid(row=0, column=0, columnspan=2, pady=40)
+        tk.Label(self.register_frame, text="Register", bg="#000000", fg="white", font=("Arial", 30)).grid(row=0, column=0, columnspan=2, pady=20)
 
-        # Username entry and label
-        tk.Label(self.register_frame, text="Username", bg="#000000", fg="white", font=("Arial", 15)).grid(row=1, column=0)
-        self.username_entry = tk.Entry(self.register_frame, bg="#000000", fg="white")
-        self.username_entry.grid(row=1, column=1, pady=10)
+        # First Name
+        tk.Label(self.register_frame, text="First Name", bg="#000000", fg="white", font=("Arial", 15)).grid(row=1, column=0)
+        self.first_name_entry = tk.Entry(self.register_frame, bg="#000000", fg="white")
+        self.first_name_entry.grid(row=1, column=1, pady=10)
 
-        # Password entry and label
-        tk.Label(self.register_frame, text="Password", bg="#000000", fg="white", font=("Arial", 15)).grid(row=2, column=0)
+        # Last Name
+        tk.Label(self.register_frame, text="Last Name", bg="#000000", fg="white", font=("Arial", 15)).grid(row=2, column=0)
+        self.last_name_entry = tk.Entry(self.register_frame, bg="#000000", fg="white")
+        self.last_name_entry.grid(row=2, column=1, pady=10)
+
+        # Email
+        tk.Label(self.register_frame, text="Email", bg="#000000", fg="white", font=("Arial", 15)).grid(row=3, column=0)
+        self.email_entry = tk.Entry(self.register_frame, bg="#000000", fg="white")
+        self.email_entry.grid(row=3, column=1, pady=10)
+
+        # Password
+        tk.Label(self.register_frame, text="Password", bg="#000000", fg="white", font=("Arial", 15)).grid(row=4, column=0)
         self.password_entry = tk.Entry(self.register_frame, show="*", bg="#000000", fg="white")
-        self.password_entry.grid(row=2, column=1, pady=20)
+        self.password_entry.grid(row=4, column=1, pady=10)
 
-        # Register button
-        tk.Button(self.register_frame, text="Register", bg="#000000", fg="black", command=self.register).grid(row=3, column=0, columnspan=2, pady=30)
+        # Pet Choice Dropdown
+        tk.Label(self.register_frame, text="Pet Choice", bg="#000000", fg="white", font=("Arial", 15)).grid(row=5, column=0)
+        self.pet_choice_var = tk.StringVar(self.register_frame)
+        self.pet_choice_var.set("Squirrel")  # Default value
+        self.pet_choice_menu = tk.OptionMenu(self.register_frame, self.pet_choice_var, "Squirrel", "Pigeon")
+        self.pet_choice_menu.config(bg="#000000", fg="white", font=("Arial", 12))
+        self.pet_choice_menu.grid(row=5, column=1, pady=10)
 
-         # Label for displaying success/failure messages
+        # Pet Name
+        tk.Label(self.register_frame, text="Pet Name", bg="#000000", fg="white", font=("Arial", 15)).grid(row=6, column=0)
+        self.pet_name_entry = tk.Entry(self.register_frame, bg="#000000", fg="white")
+        self.pet_name_entry.grid(row=6, column=1, pady=10)
+
+        # Register Button
+        tk.Button(self.register_frame, text="Register", bg="#000000", fg="black", command=self.register).grid(row=7, column=0, columnspan=2, pady=20)
+
+        # Status Label
         self.status_label = tk.Label(self.register_frame, text="", bg="#000000", fg="white", bd=0, highlightthickness=0, font=("Arial", 12))
-        self.status_label.grid(row=3, column=1, pady=20)
+        self.status_label.grid(row=8, column=0, columnspan=2, pady=10)
 
     def register(self):
-       email = self.username_entry.get()
-       password = self.password_entry.get()
-      
-       # Check for empty fields
-       if not email or not password:
-           print("Please enter both email and password.")
-           return
-      
-       try:
-           # Attempt to create a new user
-           self.auth.create_user_with_email_and_password(email, password)
-           print("Registration successful")
-           self.on_register_success()
-           self.status_label.config(text="Register Successful!", fg="green")
-       except Exception as e:
-           # Capture the error and print a specific message for "EMAIL_EXISTS"
-           error_message = str(e)
-           if "EMAIL_EXISTS" in error_message:
-               print("This email is already registered. Please use a different email.")
-               self.status_label.config(text="This email is already registered. Please use a different email.", fg="red")
-           else:
-               print(f"An error occurred: {error_message}")
-               self.status_label.config(text=f"An error occured: {error_message}", fg="red")
-              
+        first_name = self.first_name_entry.get()
+        last_name = self.last_name_entry.get()
+        email = self.email_entry.get()
+        password = self.password_entry.get()
+        pet_choice = self.pet_choice_var.get()
+        pet_name = self.pet_name_entry.get()
 
+        # Check for empty fields
+        if not all([first_name, last_name, email, password, pet_choice, pet_name]):
+            self.status_label.config(text="Please fill out all fields.", fg="red")
+            return
+
+        try:
+            # Firebase user creation
+            user = self.auth.create_user_with_email_and_password(email, password)
+            user_id = user['localId']
+
+            # Save additional user details
+            db = self.firebase.database()
+            user_data = {
+                "first_name": first_name,
+                "last_name": last_name,
+                "email": email,
+                "pet": {
+                    "type": pet_choice.lower(),
+                    "name": pet_name
+                }
+            }
+            db.child("users").child(user_id).set(user_data)
+
+            self.status_label.config(text="Registration Successful!", fg="green")
+            self.on_register_success()
+        except Exception as e:
+            error_message = str(e)
+            self.status_label.config(text=f"An error occurred: {error_message}", fg="red")
 
     def show(self):
         self.register_frame.pack()
