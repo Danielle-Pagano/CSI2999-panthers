@@ -13,9 +13,13 @@ critterList = []
 
 i = 0
 while i < file_count:
-    crit = Image.open(cd + "/SpriteFolder/s" + str(i) + ".png")
-    critterList.append(crit)
-    i = i + 1
+    #Files are named in a s# format
+    try:
+        crit = Image.open(cd + "/SpriteFolder/s" + str(i) + ".png")
+        critterList.append(crit)
+        i = i + 1
+    except:
+        i = i + 1
 
 #Animal Class Object
 class Animal:
@@ -70,6 +74,6 @@ class Animal:
         image = self.frame[y][x]
         return image
 
-#squirrel = Animal(1)
-#squirrel.FrameGet(0, 4).show()
+#squirrel = Animal(0)
+#squirrel.FrameGet(1, 4).show()
 #print(squirrel.FrameGet(0, 0).getcolors())
