@@ -5,11 +5,11 @@ from tkinter.font import Font
 import ttkbootstrap as tb
 from PIL import Image, ImageTk, ImageFont
 import os as os
-import time, threading
+import threading
 
 
 import spriteFunctions as spf
-import app, accountCreation
+import accountCreation, application
 from Sprite_Stuff import SpriteSheetFramework as sprite
 
 cd = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
@@ -186,7 +186,7 @@ class MainScreen(tk.Frame):
         self.sleep_icon = display_image("button_icons/sleep_button.png", size=self.tb_size)
         self.eat_icon = display_image("button_icons/eat_button.png", size=self.tb_size)
         self.play_icon = display_image("button_icons/play_button.png", size=self.tb_size)
-        self.home_icon = display_image("button_icons/home_button.png", size=self.tb_size)
+        self.home_icon = display_image("button_icons/home_icon.png", size=self.tb_size)
 
         # Name label
         self.name_label = tk.Label(self, text="Pets's Name", font=("Helvetica",15)).place(relwidth=1,x=0,y=0,height=30)
@@ -249,7 +249,7 @@ class MainScreen(tk.Frame):
         
         self.happiness_bar["maximum"] = self.countdown_time
         self.happiness_bar["value"] = self.countdown_time
-        app.update_happiness_bar(self.happiness_bar, self.countdown_time)
+        application.update_happiness_bar(self.happiness_bar, self.countdown_time)
 
         # Hunger bar
         tk.Label(
@@ -270,7 +270,7 @@ class MainScreen(tk.Frame):
         
         self.hunger_bar["maximum"] = self.countdown_time
         self.hunger_bar["value"] = self.countdown_time
-        app.update_hunger_bar(self.hunger_bar, self.countdown_time)
+        application.update_hunger_bar(self.hunger_bar, self.countdown_time)
 
         # Energy bar
         tk.Label(
@@ -291,7 +291,7 @@ class MainScreen(tk.Frame):
         
         self.energy_bar["maximum"] = self.countdown_time
         self.energy_bar["value"] = self.countdown_time
-        app.update_energy_bar(self.energy_bar, self.countdown_time)
+        application.update_energy_bar(self.energy_bar, self.countdown_time)
     
 
 class TomogatchiApp(tk.Tk):

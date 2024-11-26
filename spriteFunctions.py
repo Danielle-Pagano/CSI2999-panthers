@@ -1,4 +1,4 @@
-import app
+import application
 from Sprite_Stuff import SpriteSheetFramework as sprite
 import time
 from PIL import Image, ImageTk
@@ -7,11 +7,11 @@ def trigger_animation_update(self, state):
         self.petState = state
         self.is_busy = True
         if state == 1: 
-            app.add_to_bar(self.happiness_bar, app.update_happiness_bar)
+            application.add_to_bar(self.happiness_bar, application.update_happiness_bar)
         elif state == 2:
-            app.add_to_bar(self.hunger_bar, app.update_hunger_bar)
+            application.add_to_bar(self.hunger_bar, application.update_hunger_bar)
         elif state == 3:
-            app.add_to_bar(self.energy_bar, app.update_energy_bar)
+            application.add_to_bar(self.energy_bar, application.update_energy_bar)
 
 def sprite_animation(self):
     # Run this in a loop to handle animation
