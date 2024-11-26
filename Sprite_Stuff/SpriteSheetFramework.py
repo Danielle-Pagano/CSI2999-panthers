@@ -1,15 +1,25 @@
 import os as os
 from PIL import Image
 
+#Counts the number of files in Sprites, needed to make the array
+def count_files(directory):
+    return len([f for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f))])
 cd = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
-print(cd)
+dp = cd + "\SpriteFolder"
+file_count = count_files(dp)
 
+#List of all animals
 critterList = []
 
-#This will change to check every file within file "Sprites" and add to critterList array
-Squirrelsprite = "STS.png"
-crit1 = Image.open(cd + "/SpriteFolder/STS.png")
-critterList.append(crit1)
+i = 0
+while i < file_count:
+    #Files are named in a s# format
+    try:
+        crit = Image.open(cd + "/SpriteFolder/s" + str(i) + ".png")
+        critterList.append(crit)
+        i = i + 1
+    except:
+        i = i + 1
 
 #Animal Class Object
 class Animal:
@@ -64,7 +74,6 @@ class Animal:
         image = self.frame[y][x]
         return image
 
-
 #squirrel = Animal(0)
-#squirrel.FrameGet(0, 0).show()
+#squirrel.FrameGet(1, 4).show()
 #print(squirrel.FrameGet(0, 0).getcolors())

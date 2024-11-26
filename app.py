@@ -1,8 +1,4 @@
-import tkinter as tk
-from tkinter import ttk
-#import customtkinter as ctk
-from PIL import Image, ImageTk
-import tomogatchiGUI
+
 
 def update_hunger_bar(hunger_bar, countdown_time):
     if countdown_time > 100:
@@ -16,7 +12,6 @@ def update_hunger_bar(hunger_bar, countdown_time):
         hunger_bar["value"] = 0
 
 def update_happiness_bar(happiness_bar, countdown_time):
-    print("Updating happiness bar")
     if countdown_time > 0:
         countdown_time -= 1
         happiness_bar["value"] = countdown_time
