@@ -1,35 +1,53 @@
 import tkinter as tk
 from PIL import Image, ImageTk
+import requests
+from io import BytesIO
+
 
 class petViewPage:
     def __init__(self, window):
         self.window = window
         self.frame = tk.Frame(window, bg="#000000")
 
-        # Load the GIF frames
-        idle_squirrel = "/Users/ggvhs/Desktop/Projects/pets/images/idle_Squirrel.gif"
-        info = Image.open(idle_squirrel)
+        # Firebase Storage URLs for GIFs (replace with actual URLs)
+        self.gif_urls = {
+            "squirrel": "https://firebasestorage.googleapis.com/v0/b/YOUR_PROJECT_ID/o/gifs%2Fsquirrel.gif?alt=media",
+            "pigeon": "https://firebasestorage.googleapis.com/v0/b/YOUR_PROJECT_ID/o/gifs%2Fpigeon.gif?alt=media",
+        }
 
-        # Retrieve the number of frames
-        frames = info.n_frames
-        photoimage_objects = []
-        for i in range(frames):
-            obj = tk.PhotoImage(file=idle_squirrel, format=f"gif -index {i}")
-            photoimage_objects.append(obj)
-    
-        # Define the animation function
-        def idleAnimation(current_frame=0):
-            image = photoimage_objects[current_frame]
-            self.idle_gif_label.configure(image=image)
-            current_frame = (current_frame + 1) % frames  # Loop back to the first frame
-            self.frame.after(200, idleAnimation, current_frame)  # Run the function again after 200ms
+        # Default GIF
+        self.load_and_display_gif(self.gif_urls["squirrel"])
 
-        # Create the label widget for displaying the GIF animation
-        self.idle_gif_label = tk.Label(self.frame, image=photoimage_objects[0], bg="#000000")
+    def load_and_display_gif(self, url):
+        # Fetch the GIF data from the URL
+        response = requests.get(url)
+        response.raise_for_status()  # Ensure the request was successful
+        gif_data = BytesIO(response.content)
+
+        # Load GIF frames
+        gif_image = Image.open(gif_data)
+        self.frames = []
+        try:
+            while True:
+                frame = ImageTk.PhotoImage(gif_image.copy())
+                self.frames.append(frame)
+                gif_image.seek(len(self.frames))  # Move to the next frame
+        except EOFError:
+            pass  # End of GIF frames
+
+        # Display the animation
+        self.current_frame = 0
+        self.idle_gif_label = tk.Label(self.frame, bg="#000000")
         self.idle_gif_label.pack()
+        self.animate_gif()
 
-        # Start the animation
-        idleAnimation()
+    def animate_gif(self):
+        # Update the displayed frame
+        if self.frames:
+            frame = self.frames[self.current_frame]
+            self.idle_gif_label.config(image=frame)
+            self.current_frame = (self.current_frame + 1) % len(self.frames)
+            self.frame.after(200, self.animate_gif)  # Adjust speed as needed
 
     def show(self):
         self.frame.pack()
