@@ -24,9 +24,10 @@ class MainApp:
         # Start with the login page
         self.login_page.show()
 
-    def show_petview(self):
+    def show_petview(self, pet_choice="squirrel"):
         self.login_page.hide()
         self.register_page.hide()
+        self.petview_page.load_and_display_gif(self.petview_page.gif_urls[pet_choice])
         self.petview_page.show()
     
     def show_register(self):

@@ -11,8 +11,8 @@ class petViewPage:
 
         # Firebase Storage URLs for GIFs (replace with actual URLs)
         self.gif_urls = {
-            "squirrel": "https://firebasestorage.googleapis.com/v0/b/YOUR_PROJECT_ID/o/gifs%2Fsquirrel.gif?alt=media",
-            "pigeon": "https://firebasestorage.googleapis.com/v0/b/YOUR_PROJECT_ID/o/gifs%2Fpigeon.gif?alt=media",
+            "squirrel": "https://firebasestorage.googleapis.com/v0/b/petstkinter.firebasestorage.app/o/gifs%2Fsquirrel%2Fidle_Squirrel.gif?alt=media&token=41d6fdc1-cfb2-48e6-bf84-464db0332e6c",
+            "pigeon":  "https://firebasestorage.googleapis.com/v0/b/petstkinter.firebasestorage.app/o/gifs%2Fpigeon%2Fidle_pigeon.gif?alt=media&token=e8bc6722-06f7-4d43-9252-206106d57e11",
         }
 
         # Default GIF
