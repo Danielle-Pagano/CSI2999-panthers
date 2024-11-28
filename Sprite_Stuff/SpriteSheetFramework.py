@@ -75,5 +75,5 @@ class Animal:
         return image
 
 #squirrel = Animal(0)
-#squirrel.FrameGet(1, 4).show()
+#squirrel.FrameGet(5, 4).show()
 #print(squirrel.FrameGet(0, 0).getcolors())

@@ -170,7 +170,7 @@ class MainScreen(tk.Frame):
 
         # Setting up animation and label
         self.petState = 0
-        self.pet = sprite.Animal(1)
+        self.pet = sprite.Animal(0)
         self.image_label = tk.Label(self)
         self.image_label.place(x=200, y=50)
         self.current_img = None
@@ -196,7 +196,7 @@ class MainScreen(tk.Frame):
 
 
         # Buttons inside the activity frame
-        tb.Button(
+        tb.Button( #Play
             self,
             image=self.play_icon,
             bootstyle="primary",
@@ -204,7 +204,7 @@ class MainScreen(tk.Frame):
             cursor='hand2'
         ).place(x=35, y=258)
 
-        tb.Button(
+        tb.Button( #Eat
             self,
             image=self.eat_icon,
             bootstyle="success",
@@ -212,7 +212,7 @@ class MainScreen(tk.Frame):
             cursor='hand2'
         ).place(x=110, y=258)
 
-        tb.Button(
+        tb.Button( #Sleep
             self,
             image=self.sleep_icon,
             bootstyle="warning",
