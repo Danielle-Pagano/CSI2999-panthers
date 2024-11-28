@@ -72,7 +72,7 @@ class RegisterPage:
         last_name = self.last_name_entry.get()
         email = self.email_entry.get()
         password = self.password_entry.get()
-        pet_choice = self.pet_choice_var.get()
+        pet_choice = self.pet_choice_var.get().lower() 
         pet_name = self.pet_name_entry.get()
 
         # Check for empty fields
@@ -92,14 +92,14 @@ class RegisterPage:
                 "last_name": last_name,
                 "email": email,
                 "pet": {
-                    "type": pet_choice.lower(),
+                    "type": pet_choice,
                     "name": pet_name
                 }
             }
             db.child("users").child(user_id).set(user_data)
 
             self.status_label.config(text="Registration Successful!", fg="green")
-            self.on_register_success()
+            self.on_register_success(pet_choice)
         except Exception as e:
             error_message = str(e)
             self.status_label.config(text=f"An error occurred: {error_message}", fg="red")
