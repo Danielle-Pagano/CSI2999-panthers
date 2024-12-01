@@ -1,4 +1,5 @@
 import application
+import random
 from Sprite_Stuff import SpriteSheetFramework as sprite
 import time
 from PIL import Image, ImageTk
@@ -23,17 +24,38 @@ def sprite_animation(self):
         else:
             play_idle_animation(self)
 
+def randomIdle(self):
+    i = random.randint(4, 6)
+    for frame_index in range(len(self.pet.frame[i])):
+        if self.is_busy:
+            break
+        update_sprite(self, i, frame_index)
+        time.sleep(0.2)
+
 def play_idle_animation(self):
     for frame_index in range(len(self.pet.frame[0])):  # Loop through idle frames
         if self.is_busy:
             break  # Interrupt idle if an activity is triggered
         update_sprite(self, 0, frame_index)
         time.sleep(0.3)  # Control frame rate
+    # 12% chance for a random idle animation after a full loop
+    if random.randint(0, 100) <= 12:
+        randomIdle(self) 
 
 def play_activity_animation(self):
+    i = self.petState
     for frame_index in range(len(self.pet.frame[self.petState])):  # Loop through activity frames
+        # Prevents the animation from crashing upon changing the activity 
+        if i != self.petState:
+            play_activity_animation(self)
+            break
         update_sprite(self, self.petState, frame_index)
         time.sleep(0.2)  # Control frame rate
+    
+    #Keeps the sprite playing (durring sleep or death)
+    print(self.petState)
+    while self.petState == 3 or self.petState == 7:
+        play_activity_animation(self)
 
 def update_sprite(self, y, frame_index):
     # Retrieve and update the image for the current frame
