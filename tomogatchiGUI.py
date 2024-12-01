@@ -139,36 +139,46 @@ class SaveFileScreen(tk.Frame):
     def __init__(self, parent, controller):
         super().__init__(parent)
         self.controller = controller
+        self.place(relwidth=1, relheight=1) 
 
-        self.rowconfigure(0)
-        self.rowconfigure(1)
-        self.rowconfigure(2)
-        self.columnconfigure(0)
+        savefile_title = tk.Label(self, text="Select Save File", font=("Helvetica",15))
+        savefile_title.place(relwidth=1,x=0,y=0,height=30)
 
-        self.grid(row=0, column=0, sticky='nsew')
 
         #currently place holder
         continue_file_frame = tk.LabelFrame(self, text="Save File 1")
-        continue_file_frame.grid(row=0, column=0, padx=20, pady=20, sticky='nsew')
+        continue_file_frame.place(x=20,y=50, relwidth=.9, height=110)
 
-        tb.Button(continue_file_frame, text="Continue", bootstyle='success',
-                  command=lambda: controller.show_frame("MainScreen"), cursor='hand2').grid(row=0, column=0, sticky='ew')
+        tb.Button(continue_file_frame,
+                text="Continue",
+                bootstyle='success',
+                command=lambda: controller.show_frame("MainScreen"),
+                cursor='hand2'
+                ).place(x=20,y=10, width=100)
         
-        tb.Button(continue_file_frame, text="Delete Save", bootstyle='danger', cursor='hand2').grid(row=1, column=0, sticky='ew')
+        tb.Button(continue_file_frame,
+                text="Delete Save",
+                bootstyle='danger',
+                cursor='hand2'
+                ).place(x=20, y=50, width=100)
         
-        tk.Label(continue_file_frame, text="Animal Name").grid(row=0, column=1)
-        tk.Label(continue_file_frame, text="Time Spent").grid(row=1, column=1)
+        tk.Label(continue_file_frame, text="Animal Name").place(x=150, y=15)
+        tk.Label(continue_file_frame, text="Time Spent").place(x=150, y=55)
 
-        new_save_frame = tk.LabelFrame(self, text="New Save File")
-        new_save_frame.grid(row=1, column=0, padx=20, pady=20, sticky='nsew')
+        new_save_frame = tk.LabelFrame(self, text="Save File")
+        new_save_frame.place(x=20, y=190, relwidth=.9, height=110)
         
-        tb.Button(new_save_frame, text="New File", bootstyle='secondary',
-                  command=lambda: controller.show_frame("MainScreen"), cursor="hand2").grid(row=0, column=0, sticky='ew')
+        tb.Button(new_save_frame,
+                text="New File",
+                bootstyle='secondary',
+                command=lambda: controller.show_frame("MainScreen"),
+                cursor="hand2"
+                ).place(x=20, y=20, width=100)
         
-        tk.Label(new_save_frame, text="______").grid(row=0, column=1)
-        tk.Label(new_save_frame, text="______").grid(row=1, column=1)
+        tk.Label(new_save_frame, text="______").place(x=150, y=20)
+        tk.Label(new_save_frame, text="______").place(x=150,y=80)
 
-        self.tb_size = (42,42)
+        self.tb_size = (30,30)
         self.home_icon = display_image("button_icons/home_icon.png", size=self.tb_size)
 
         tb.Button(
@@ -176,7 +186,7 @@ class SaveFileScreen(tk.Frame):
             image=self.home_icon,
             bootstyle='secondary',
             command=lambda: controller.show_frame("HomeScreen"),
-            cursor='hand2').grid(row=2,column=0)
+            cursor='hand2').place(x=30,y=325)
 
 class MainScreen(tk.Frame):
     def __init__(self, parent, controller):
@@ -321,7 +331,7 @@ class TomogatchiApp(tk.Tk):
             self.frames[FrameClass.__name__] = frame
             frame.grid(row=0, column=0, sticky="nsew")
         
-        self.show_frame("SignUpScreen")
+        self.show_frame("SaveFileScreen")
 
     def show_frame(self, frame_name):
         frame = self.frames[frame_name]
