@@ -67,47 +67,43 @@ class SignUpScreen(tk.Frame):
     def __init__(self, parent, controller):
         super().__init__(parent)
         self.controller = controller
-        self.grid(row=0, column=0, sticky='nsew')
+        self.place(relwidth=1, relheight=1) 
         
         signup_info_frame = tk.LabelFrame(self, text="User Information")
-        signup_info_frame.grid(row=0, column=0, padx=20, pady=20, sticky='nsew')
+        signup_info_frame.place(x=20,y=20, relwidth=.9, height=150)
 
-        tk.Label(signup_info_frame, text="First Name").grid(row=0, column=0)
+        tk.Label(signup_info_frame, text="First Name").place(x=50,y=10)
         self.first_name_entry = tk.Entry(signup_info_frame)
-        self.first_name_entry.grid(row=1, column=0)
+        self.first_name_entry.place(x=20, y=35)
         
-        tk.Label(signup_info_frame, text="Last Name").grid(row=0, column=1)
+        tk.Label(signup_info_frame, text="Last Name").place(x=210,y=10)
         self.last_name_entry = tk.Entry(signup_info_frame)
-        self.last_name_entry.grid(row=1, column=1)
+        self.last_name_entry.place(x=180, y=35)
         
-        tk.Label(signup_info_frame, text="Email").grid(row=0, column=2)
+        tk.Label(signup_info_frame, text="Email").place(x=385,y=10)
         self.email_entry = tk.Entry(signup_info_frame)
-        self.email_entry.grid(row=1, column=2)
+        self.email_entry.place(x=340,y=35)
 
-        tk.Label(signup_info_frame, text="Age").grid(row=2, column=0)
-        self.age_entry = tk.Spinbox(signup_info_frame, from_=1, to=100)
-        self.age_entry.grid(row=3, column=0)
+        tk.Label(signup_info_frame, text="Age").place(x=65, y=75)
+        self.age_entry = tk.Spinbox(signup_info_frame, from_=1, to=100, width=18)
+        self.age_entry.place(x=20, y=100)
         
-        tk.Label(signup_info_frame, text="Password").grid(row=2, column=1)
+        tk.Label(signup_info_frame, text="Password").place(x=215,y=75)
         self.password_entry = tk.Entry(signup_info_frame)
-        self.password_entry.grid(row=3, column=1)
+        self.password_entry.place(x=180, y=100)
         
-        for widget in signup_info_frame.winfo_children():
-            widget.grid_configure(padx=10, pady=5)
 
         animal_selection_frame = tk.LabelFrame(self, text="Animal")
-        animal_selection_frame.grid(row=1, column=0, sticky="news", padx=20, pady=20)
+        animal_selection_frame.place(x=20,y=190, relwidth=.9, height=100)
 
-        tk.Label(animal_selection_frame, text="Select Animal").grid(row=0, column=0)
-        self.animal_entry = ttk.Combobox(animal_selection_frame, values=["Squirrel"])
-        self.animal_entry.grid(row=1, column=0)
+        tk.Label(animal_selection_frame, text="Select Animal").place(x=95,y=10)
+        self.animal_entry = ttk.Combobox(animal_selection_frame, values=["Squirrel", "Pigeon"])
+        self.animal_entry.place(x=60,y=35)
         
-        tk.Label(animal_selection_frame, text="Animal's Name").grid(row=0, column=2)
+        tk.Label(animal_selection_frame, text="Animal's Name").place(x=310,y=10)
         self.animal_name_entry = tk.Entry(animal_selection_frame)
-        self.animal_name_entry.grid(row=1, column=2)
+        self.animal_name_entry.place(x=280,y=35, height=27, width=150)
 
-        for widget in animal_selection_frame.winfo_children():
-            widget.grid_configure(padx=10, pady=5)
         
         accountCreation.valid_firstname(self.first_name_entry)
         accountCreation.valid_lastname(self.last_name_entry)
@@ -118,12 +114,25 @@ class SignUpScreen(tk.Frame):
         accountCreation.valid_animal_name(self.animal_name_entry)
         accountCreation.valid_requirements(self.first_name_entry, self.last_name_entry, self.password_entry, self.email_entry, self.animal_entry, self.animal_name_entry, self.age_entry)
 
-        tb.Button(self, text="Home", bootstyle='light', command=lambda: controller.show_frame("HomeScreen"),
-                  cursor='hand2').grid(row=2, column=0, sticky='sw', padx=5, pady=5)
         
-        tb.Button(self, text="Create Account", bootstyle='success', command = lambda: accountCreation.requirements_met(self, controller, self.first_name_entry, self.last_name_entry,
+        self.tb_size = (30,30)
+        self.home_icon = display_image("button_icons/home_icon.png", size=self.tb_size)
+
+        tb.Button(
+            self,
+            image=self.home_icon,
+            bootstyle='secondary',
+            command=lambda: controller.show_frame("HomeScreen"),
+            cursor='hand2').place(x=20,y=325)
+
+        
+        tb.Button(
+            self, 
+            text="Create Account", 
+            bootstyle='success', 
+            command = lambda: accountCreation.requirements_met(self, controller, 175, 335, self.first_name_entry, self.last_name_entry,
                     self.password_entry, self.email_entry, self.animal_entry, self.animal_name_entry, self.age_entry),
-                  cursor='hand2').grid(row=2, column=0, sticky='se', padx=5, pady=5)
+            cursor='hand2').place(x=400,y=330)
 
 #savefile screen frame
 class SaveFileScreen(tk.Frame):
@@ -159,8 +168,15 @@ class SaveFileScreen(tk.Frame):
         tk.Label(new_save_frame, text="______").grid(row=0, column=1)
         tk.Label(new_save_frame, text="______").grid(row=1, column=1)
 
-        tb.Button(self, text="Home", bootstyle='secondary', command=lambda: controller.show_frame("HomeScreen"),
-                  cursor='hand2').grid(row=2, column=0, sticky='sw', padx=5, pady=5)
+        self.tb_size = (42,42)
+        self.home_icon = display_image("button_icons/home_icon.png", size=self.tb_size)
+
+        tb.Button(
+            self,
+            image=self.home_icon,
+            bootstyle='secondary',
+            command=lambda: controller.show_frame("HomeScreen"),
+            cursor='hand2').grid(row=2,column=0)
 
 class MainScreen(tk.Frame):
     def __init__(self, parent, controller):
@@ -181,7 +197,6 @@ class MainScreen(tk.Frame):
         threading.Thread(target=lambda: spf.sprite_animation(self)).start()
 
         # Load button icons
-        self.new_size = (60,60)
         self.tb_size = (42,42)
         self.sleep_icon = display_image("button_icons/sleep_button.png", size=self.tb_size)
         self.eat_icon = display_image("button_icons/eat_button.png", size=self.tb_size)
@@ -306,7 +321,7 @@ class TomogatchiApp(tk.Tk):
             self.frames[FrameClass.__name__] = frame
             frame.grid(row=0, column=0, sticky="nsew")
         
-        self.show_frame("HomeScreen")
+        self.show_frame("SignUpScreen")
 
     def show_frame(self, frame_name):
         frame = self.frames[frame_name]
