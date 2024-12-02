@@ -1,39 +1,29 @@
+#Dictionary that tracks current instances of the health bars
+active_updates = {}
 
-
-def update_hunger_bar(hunger_bar, countdown_time):
-    if countdown_time > 100:
-        countdown_time = 100
-
+def update_bar(bar, countdown_time):
+    bar_id = id(bar) #Gives each instance unique ID
+    
     if countdown_time > 0:
         countdown_time -= 1
-        hunger_bar["value"] = countdown_time
-        hunger_bar.after(1000, lambda: update_hunger_bar(hunger_bar, countdown_time))
+        bar["value"] = countdown_time
+        
+        #Adds bar to active updates
+        active_updates[bar_id] = bar.after(1000, lambda: update_bar(bar, countdown_time))
     else:
-        hunger_bar["value"] = 0
+        bar["value"] = 0
+        active_updates.pop(bar_id, None)  #Removes the bar from active updates
 
-def update_happiness_bar(happiness_bar, countdown_time):
-    if countdown_time > 0:
-        countdown_time -= 1
-        happiness_bar["value"] = countdown_time
-        happiness_bar.after(1000, lambda: update_happiness_bar(happiness_bar, countdown_time))
-    else:
-        happiness_bar["value"] = 0
+def add_to_bar(bar, increase):
+    bar_id = id(bar)
+    
+    #Cancels any current countdown for this bar
+    if bar_id in active_updates:
+        bar.after_cancel(active_updates[bar_id])
+        active_updates.pop(bar_id, None)
+    
+    #Updates the bar and start a new countdown
+    new_value = min(bar["value"] + increase, 100)
+    bar["value"] = new_value
+    update_bar(bar, new_value)
 
-def update_energy_bar(energy_bar, countdown_time):
-    if countdown_time > 0:
-        countdown_time -= 1
-        energy_bar["value"] = countdown_time
-        energy_bar.after(1000, lambda: update_energy_bar(energy_bar, countdown_time))
-    else:
-        energy_bar["value"] = 0
-
-def add_to_bar(health_bar, increase=5):
-    # max value is 100
-    new_value = min(health_bar["value"] + increase, 100)
-    health_bar["value"] = new_value
-    if health_bar["style"] == "info.Striped.TProgressbar":
-        update_happiness_bar(health_bar, new_value)
-    elif health_bar["style"] == "warning.Striped.TProgressbar":
-        update_hunger_bar(health_bar, new_value)
-    elif health_bar["style"] == "primary.Striped.TProgressbar":
-        update_energy_bar(health_bar, new_value)

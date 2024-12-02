@@ -2,17 +2,18 @@ import application
 import random
 from Sprite_Stuff import SpriteSheetFramework as sprite
 import time
-from PIL import Image, ImageTk
+from PIL import ImageTk
 
 def trigger_animation_update(self, state):
-        self.petState = state
-        self.is_busy = True
-        if state == 1: 
-            application.add_to_bar(self.happiness_bar, application.update_happiness_bar)
-        elif state == 2:
-            application.add_to_bar(self.hunger_bar, application.update_hunger_bar)
-        elif state == 3:
-            application.add_to_bar(self.energy_bar, application.update_energy_bar)
+    self.petState = state
+    self.is_busy = True
+
+    if state == 1:  # Happiness
+        application.add_to_bar(self.happiness_bar, 10)
+    elif state == 2:  # Hunger
+        application.add_to_bar(self.hunger_bar, 15)
+    elif state == 3:  # Energy
+        application.add_to_bar(self.energy_bar, 20)
 
 def sprite_animation(self):
     # Run this in a loop to handle animation

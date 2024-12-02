@@ -219,7 +219,6 @@ class MainScreen(tk.Frame):
         # Menu Label
         self.menu_label = tk.Label(self,text="Menu", font=('Helvetica',15), borderwidth=2, relief="solid").place(relwidth=1, x=0, y=200, height=40)
 
-
         # Buttons inside the activity frame
         tb.Button( #Play
             self,
@@ -274,7 +273,7 @@ class MainScreen(tk.Frame):
         
         self.happiness_bar["maximum"] = self.countdown_time
         self.happiness_bar["value"] = self.countdown_time
-        application.update_happiness_bar(self.happiness_bar, self.countdown_time)
+        application.update_bar(self.happiness_bar, 100)
 
         # Hunger bar
         tk.Label(
@@ -295,7 +294,7 @@ class MainScreen(tk.Frame):
         
         self.hunger_bar["maximum"] = self.countdown_time
         self.hunger_bar["value"] = self.countdown_time
-        application.update_hunger_bar(self.hunger_bar, self.countdown_time)
+        application.update_bar(self.hunger_bar, 100)
 
         # Energy bar
         tk.Label(
@@ -316,7 +315,7 @@ class MainScreen(tk.Frame):
         
         self.energy_bar["maximum"] = self.countdown_time
         self.energy_bar["value"] = self.countdown_time
-        application.update_energy_bar(self.energy_bar, self.countdown_time)
+        application.update_bar(self.energy_bar, 100)
     
 
 class TomogatchiApp(tk.Tk):
@@ -331,7 +330,7 @@ class TomogatchiApp(tk.Tk):
             self.frames[FrameClass.__name__] = frame
             frame.grid(row=0, column=0, sticky="nsew")
         
-        self.show_frame("SaveFileScreen")
+        self.show_frame("HomeScreen")
 
     def show_frame(self, frame_name):
         frame = self.frames[frame_name]
