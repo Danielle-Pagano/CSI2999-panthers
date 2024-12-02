@@ -214,7 +214,7 @@ class MainScreen(tk.Frame):
         self.home_icon = display_image("button_icons/home_icon.png", size=self.tb_size)
 
         # Name label
-        self.name_label = tk.Label(self, text="Pets's Name", font=("Helvetica",15)).place(relwidth=1,x=0,y=0,height=30)
+        self.name_label = tk.Label(self, text="Pet Name", font=("Helvetica",15)).place(relwidth=1,x=0,y=0,height=30)
 
         # Menu Label
         self.menu_label = tk.Label(self,text="Menu", font=('Helvetica',15), borderwidth=2, relief="solid").place(relwidth=1, x=0, y=200, height=40)
@@ -265,7 +265,7 @@ class MainScreen(tk.Frame):
             self,
             value=100,
             orient="horizontal",
-            bootstyle="warning-striped",
+            bootstyle="primary-striped",
             length=200, 
             mode='determinate'
             )
@@ -307,7 +307,7 @@ class MainScreen(tk.Frame):
             self,
             value=100,
             orient="horizontal",
-            bootstyle="primary-striped",
+            bootstyle="warning-striped",
             length=200,
             mode='determinate'
             )
