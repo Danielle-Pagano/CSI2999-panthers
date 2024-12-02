@@ -9,14 +9,19 @@ class petViewPage:
         self.window = window
         self.frame = tk.Frame(window, bg="#000000")
 
-        # Firebase Storage URLs for GIFs (replace with actual URLs)
+        # Labels for user information
+        self.user_info_label = tk.Label(self.frame, text="", bg="#333333", fg="white", font=("Arial", 15))
+        self.user_info_label.pack()
+
+        # Firebase Storage URLs for GIFs
         self.gif_urls = {
             "squirrel": "https://firebasestorage.googleapis.com/v0/b/petstkinter.firebasestorage.app/o/gifs%2Fsquirrel%2Fidle_Squirrel.gif?alt=media&token=41d6fdc1-cfb2-48e6-bf84-464db0332e6c",
-            "pigeon":  "https://firebasestorage.googleapis.com/v0/b/petstkinter.firebasestorage.app/o/gifs%2Fpigeon%2Fidle_pigeon.gif?alt=media&token=e8bc6722-06f7-4d43-9252-206106d57e11",
+            "pigeon": "https://firebasestorage.googleapis.com/v0/b/petstkinter.firebasestorage.app/o/gifs%2Fpigeon%2Fidle_pigeon.gif?alt=media&token=e8bc6722-06f7-4d43-9252-206106d57e11",
         }
 
-        # Default GIF
-        self.load_and_display_gif(self.gif_urls["squirrel"])
+    def update_user_info(self, first_name, last_name, pet_name):
+        # Update the user info label
+        self.user_info_label.config(text=f"Name: {first_name} {last_name}\nPet: {pet_name}")
 
     def load_and_display_gif(self, url):
         # Fetch the GIF data from the URL

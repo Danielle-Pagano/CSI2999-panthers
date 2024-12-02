@@ -5,6 +5,7 @@ import pyrebase
 
 load_dotenv()
 
+
 class LoginPage:
     def __init__(self, window, on_login_success, show_register_page):
         firebaseConfig = {
@@ -19,14 +20,14 @@ class LoginPage:
 
         self.firebase = pyrebase.initialize_app(firebaseConfig)
         self.auth = self.firebase.auth()
-        
+
         self.window = window
         self.on_login_success = on_login_success
         self.show_register_page = show_register_page
 
         # Set the window's background color to black
         self.window.configure(bg="#000000")
-        
+
         self.login_frame = tk.Frame(window, bg="#000000")
 
         # Login Label
@@ -48,7 +49,7 @@ class LoginPage:
         # Register button
         tk.Button(self.login_frame, text="Register", bg="#000000", fg="black", command=self.show_register_page).grid(row=4, column=0, columnspan=2, pady=10)
 
-       # Login Status label
+        # Login Status label
         self.login_status_label = tk.Label(self.login_frame, text="", bg="#000000", font=("Arial", 12), fg="red")
         self.login_status_label.grid(row=5, column=0, columnspan=2)
 
@@ -59,14 +60,21 @@ class LoginPage:
         if not email or not password:
             self.login_status_label.config(text="Both fields are required", fg="red")
             return
-        
+
         try:
-            self.auth.sign_in_with_email_and_password(email, password)
-            print("Login successful")
-            self.login_status_label.config(text="Login successful", fg="green")
-            self.on_login_success()
-        except:
-            print("Invalid email or password")
+            # Sign in the user
+            user = self.auth.sign_in_with_email_and_password(email, password)
+            user_id = user['localId']
+
+            # Fetch user details from the database
+            db = self.firebase.database()
+            user_data = db.child("users").child(user_id).get().val()
+
+            if user_data:
+                self.on_login_success(user_data)  # Pass user data
+            else:
+                self.login_status_label.config(text="User data not found", fg="red")
+        except Exception as e:
             self.login_status_label.config(text="Invalid email or password", fg="red")
 
     def show(self):

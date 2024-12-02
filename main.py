@@ -24,12 +24,24 @@ class MainApp:
         # Start with the login page
         self.login_page.show()
 
-    def show_petview(self, pet_choice="squirrel"):
+    def show_petview(self, user_data):
         self.login_page.hide()
         self.register_page.hide()
-        self.petview_page.load_and_display_gif(self.petview_page.gif_urls[pet_choice])
+
+        # Pass user data to petViewPage
+        self.petview_page.update_user_info(
+            user_data['first_name'],
+            user_data['last_name'],
+            user_data['pet']['name']
+        )
+
+        # Load and display the pet's GIF
+        pet_type = user_data['pet']['type']
+        self.petview_page.load_and_display_gif(
+            self.petview_page.gif_urls.get(pet_type, self.petview_page.gif_urls["squirrel"])
+        )
         self.petview_page.show()
-    
+
     def show_register(self):
         self.login_page.hide()
         self.register_page.show()
@@ -42,7 +54,6 @@ if __name__ == "__main__":
     window = tk.Tk()
     app = MainApp(window)
     window.mainloop()
-
 
 
 
