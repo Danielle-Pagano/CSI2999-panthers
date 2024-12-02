@@ -53,8 +53,7 @@ def play_activity_animation(self):
         time.sleep(0.2)  # Control frame rate
     
     #Keeps the sprite playing (durring sleep or death)
-    print(self.petState)
-    while self.petState == 3 or self.petState == 7:
+    while self.petState == 7:
         play_activity_animation(self)
 
 def update_sprite(self, y, frame_index):
