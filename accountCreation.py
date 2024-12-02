@@ -1,5 +1,5 @@
 import tkinter as tk
-
+from tkinter import ttk
 
 available_animals = ["Squirrel", "Pigeon"]
 
@@ -47,12 +47,12 @@ def requirements_met(parent, controller, x_place, y_place, firstname_entry, last
       if (not firstname_entry.get().strip() or not lastname_entry.get().strip() or not email_entry.get().strip() or not password_entry.get().strip()
         or not animal_entry.get().strip() or not animal_name_entry.get().strip() or not age_entry.get().strip()):
           
-          error_message = tk.Label(parent, text="Please fill all required fields", bg="#fff",fg="#FF0000")
+          error_message = ttk.Label(parent, text="Please fill all required fields", foreground='red')
           error_message.place(x=x_place, y=y_place)
           return False
 
       if not valid_requirements(firstname_entry, lastname_entry, password_entry, email_entry, animal_entry, animal_name_entry, age_entry):
-          error_message = tk.Label(parent, text="One or more fields are invalid", bg='#fff', fg="#FF0000")
+          error_message = ttk.Label(parent, text="One or more fields are invalid",foreground='red')
           error_message.place(x=x_place, y=y_place)
           return False
     
