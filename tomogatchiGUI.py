@@ -9,7 +9,7 @@ import threading
 
 
 import spriteFunctions as spf
-import accountCreation, application
+import application
 from Sprite_Stuff import SpriteSheetFramework as sprite
 
 cd = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
