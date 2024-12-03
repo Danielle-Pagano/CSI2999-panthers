@@ -196,7 +196,7 @@ class MainScreen(tk.Frame):
 
         # Setting up animation and label
         self.petState = 0
-        self.pet = sprite.Animal(0)
+        self.pet = sprite.Animal(0) #This chooses the animal! currently takes 0 for squirrel or 1 for pidgeon
         self.image_label = tk.Label(self)
         self.image_label.place(x=200, y=50)
         self.current_img = None
