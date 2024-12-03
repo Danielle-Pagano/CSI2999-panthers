@@ -99,7 +99,7 @@ class RegisterPage:
             db.child("users").child(user_id).set(user_data)
 
             self.status_label.config(text="Registration Successful!", fg="green")
-            self.on_register_success(pet_choice)
+            self.on_register_success(user_data)
         except Exception as e:
             error_message = str(e)
             self.status_label.config(text=f"An error occurred: {error_message}", fg="red")
