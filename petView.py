@@ -5,13 +5,25 @@ from io import BytesIO
 
 
 class petViewPage:
-    def __init__(self, window):
+    def __init__(self, window, on_back_to_login):
         self.window = window
+        self.on_back_to_login = on_back_to_login
         self.frame = tk.Frame(window, bg="#000000")
 
         # Labels for user information
         self.user_info_label = tk.Label(self.frame, text="", bg="#333333", fg="white", font=("Arial", 15))
         self.user_info_label.pack()
+
+        # Back to Login Button
+        self.back_button = tk.Button(
+            self.frame,
+            text="Back to Login",
+            bg="#333333",
+            fg="black",
+            font=("Arial", 12),
+            command=self.on_back_to_login
+        )
+        self.back_button.pack(pady=20)
 
         # Firebase Storage URLs for GIFs
         self.gif_urls = {
