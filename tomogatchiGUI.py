@@ -1,16 +1,14 @@
 import tkinter as tk
 from tkinter import ttk
-from tkinter import *
 from tkinter.font import Font
 import ttkbootstrap as tb
-from PIL import Image, ImageTk, ImageFont
-import os as os
-import threading
-
-
+from PIL import Image, ImageTk
+import os
 import spriteFunctions as spf
 import application
 from Sprite_Stuff import SpriteSheetFramework as sprite
+from login import LoginPage
+from register import RegisterPage
 
 cd = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
@@ -26,14 +24,11 @@ def display_image(filename, size=None):
 def import_custom_font(filename, font_size):
     current_dir = os.path.dirname(__file__)
     font_path = os.path.join(current_dir, "fonts", filename)
-    
     if not os.path.isfile(font_path):
         raise FileNotFoundError(f"Font file not found: {font_path}")
-       
-    else:
-         return Font(family="SemiBold.ttf", size=font_size) 
+    return Font(family="SemiBold.ttf", size=font_size)
 
-#HomeScreen frame
+# HomeScreen frame
 class HomeScreen(tk.Frame):
     def __init__(self, parent, controller):
         super().__init__(parent)
@@ -44,60 +39,68 @@ class HomeScreen(tk.Frame):
         title_label = tb.Label(self, text="Tomogatchi", anchor="n", font=semibold_font)
         title_label.pack(padx=10, pady=10)
 
-        # background on home screen
+        # Background on home screen
         background_image = display_image("backgroundPic.jpg")
         background_label = tk.Label(self, image=background_image)
         background_label.image = background_image
         background_label.pack(fill="both", expand=True)
         
-        #separates title screen from rest of frame
+        # Separator
         home_separator = ttk.Separator(self, orient='horizontal')
         home_separator.pack(fill='x')
         
-        start_button = tb.Button(self, text="START", bootstyle='success',
-                                 command=lambda: controller.show_frame("SaveFileScreen"), cursor='hand2')
-        start_button.place(relx=0.4, rely=0.5, anchor='center')
+        # Login Button
+        login_button = tb.Button(
+            self, text="Login", bootstyle='success',
+            command=lambda: controller.show_frame("LoginPage"), cursor='hand2'
+        )
+        login_button.place(relx=0.4, rely=0.5, anchor='center')
         
-        signup_button = tb.Button(self, text="SIGN UP", bootstyle='info',
-                                  command=lambda: controller.show_frame("SignUpScreen"), cursor='hand2')
-        signup_button.place(relx=0.6, rely=0.5, anchor='center')
+        # Register Button
+        register_button = tb.Button(
+            self, text="Register", bootstyle='info',
+            command=lambda: controller.show_frame("RegisterPage"), cursor='hand2'
+        )
+        register_button.place(relx=0.6, rely=0.5, anchor='center')
 
-
-
-
+# MainScreen frame
 class MainScreen(tk.Frame):
     def __init__(self, parent, controller):
         super().__init__(parent)
         self.controller = controller
-        self.place(relwidth=1, relheight=1) 
+        self.place(relwidth=1, relheight=1)
 
-        # Setting up animation and label
+        # Label for displaying user info
+        self.user_label = tk.Label(self, text="", font=("Helvetica", 15))
+        self.user_label.place(x=20, y=20)
+
+        # Setting up animation attributes
         self.petState = 0
-        self.pet = sprite.Animal(0) #This chooses the animal! currently takes 0 for squirrel or 1 for pidgeon
+        self.pet = sprite.Animal(0)  # Choose the animal (0 for squirrel, 1 for pigeon)
         self.image_label = tk.Label(self)
         self.image_label.place(x=200, y=50)
         self.current_img = None
 
-        # Start the animation thread
-        self.stop_animation = False
-        self.is_busy = False
-        threading.Thread(target=lambda: spf.sprite_animation(self)).start()
+        # Initialize animation control flags
+        self.stop_animation = False  # Control flag for sprite animation
+        self.is_busy = False  # Flag to indicate whether the pet is busy
+
+        # Start the animation with after
+        self.animate()
 
         # Load button icons
-        self.tb_size = (42,42)
+        self.tb_size = (42, 42)
         self.sleep_icon = display_image("button_icons/sleep_button.png", size=self.tb_size)
         self.eat_icon = display_image("button_icons/eat_button.png", size=self.tb_size)
         self.play_icon = display_image("button_icons/play_button.png", size=self.tb_size)
         self.home_icon = display_image("button_icons/home_icon.png", size=self.tb_size)
 
-        # Name label
-        self.name_label = tk.Label(self, text="Pet Name", font=("Helvetica",15)).place(relwidth=1,x=0,y=0,height=30)
-
         # Menu Label
-        self.menu_label = tk.Label(self,text="Menu", font=('Helvetica',15), borderwidth=2, relief="solid").place(relwidth=1, x=0, y=200, height=40)
+        self.menu_label = tk.Label(self, text="Menu", font=('Helvetica', 15), borderwidth=2, relief="solid")
+        self.menu_label.place(relwidth=1, x=0, y=200, height=40)
 
         # Buttons inside the activity frame
-        tb.Button( #Play
+        tb.Button(  # Play
             self,
             image=self.play_icon,
             bootstyle="primary",
@@ -105,7 +108,7 @@ class MainScreen(tk.Frame):
             cursor='hand2'
         ).place(x=35, y=258)
 
-        tb.Button( #Eat
+        tb.Button(  # Eat
             self,
             image=self.eat_icon,
             bootstyle="success",
@@ -113,7 +116,7 @@ class MainScreen(tk.Frame):
             cursor='hand2'
         ).place(x=110, y=258)
 
-        tb.Button( #Sleep
+        tb.Button(  # Sleep
             self,
             image=self.sleep_icon,
             bootstyle="warning",
@@ -121,93 +124,69 @@ class MainScreen(tk.Frame):
             cursor='hand2'
         ).place(x=110, y=322)
 
-        #Home button at the bottom-left corner
+        # Home button at the bottom-left corner
         tb.Button(
             self,
             image=self.home_icon,
             bootstyle='secondary',
             command=lambda: controller.show_frame("HomeScreen"),
-            cursor='hand2').place(x=35, y=322)
+            cursor='hand2'
+        ).place(x=35, y=322)
 
-        self.countdown_time = 100
+        # Initialize animations after rendering
+        self.after(500, self.animate)
 
-        # Happiness bar
-        tk.Label(
-            self,
-            text="Happiness",
-            font="Consolas"
-            ).place(x=390, y=242)
-        
-        self.happiness_bar = tb.Progressbar(
-            self,
-            value=100,
-            orient="horizontal",
-            bootstyle="primary-striped",
-            length=200, 
-            mode='determinate'
-            )
-        self.happiness_bar.place(x=325, y=265)
-        
-        self.happiness_bar["maximum"] = self.countdown_time
-        self.happiness_bar["value"] = self.countdown_time
-        application.update_bar(self.happiness_bar, 100)
+    def animate(self):
+        #print("Animating...")
+        spf.sprite_animation(self)  # Call sprite animation
+        if not self.stop_animation:
+            self.after(50, self.animate)  # Schedule the next animation cycle
 
-        # Hunger bar
-        tk.Label(
-            self,
-            text="Hunger",
-            font="Consolas"
-            ).place(x=395, y=292)
-        
-        self.hunger_bar = tb.Progressbar(
-            self,
-            value=100,
-            orient="horizontal",
-            bootstyle="success-striped",
-            length=200, 
-            mode='determinate'
-            )
-        self.hunger_bar.place(x=325, y=315)
-        
-        self.hunger_bar["maximum"] = self.countdown_time
-        self.hunger_bar["value"] = self.countdown_time
-        application.update_bar(self.hunger_bar, 100)
+    def update_user_info(self, user_data):
+        self.user_label.config(
+            text=f"Welcome, {user_data['first_name']} {user_data['last_name']}!\nYour pet: {user_data['pet']['name']}"
+        )
 
-        # Energy bar
-        tk.Label(
-            self,
-            text="Energy",
-            font="Consolas"
-            ).place(x=395, y=342)
-        
-        self.energy_bar = ttk.Progressbar(
-            self,
-            value=100,
-            orient="horizontal",
-            bootstyle="warning-striped",
-            length=200,
-            mode='determinate'
-            )
-        self.energy_bar.place(x=325, y=365)
-        
-        self.energy_bar["maximum"] = self.countdown_time
-        self.energy_bar["value"] = self.countdown_time
-        application.update_bar(self.energy_bar, 100)
-    
-
+# TomogatchiApp
 class TomogatchiApp(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("Tomogatchi")
         self.resizable(False, False)
+
+        # Initialize user data
+        self.user_data = None
         
         self.frames = {}
         for FrameClass in (HomeScreen, MainScreen):
             frame = FrameClass(self, self)
             self.frames[FrameClass.__name__] = frame
             frame.grid(row=0, column=0, sticky="nsew")
-        
+
+        # Add LoginPage and RegisterPage
+        self.frames["LoginPage"] = LoginPage(self, self.on_login_success, self.show_register_page)
+        self.frames["RegisterPage"] = RegisterPage(self, self.on_register_success)
+        self.frames["LoginPage"].grid(row=0, column=0, sticky="nsew")
+        self.frames["RegisterPage"].grid(row=0, column=0, sticky="nsew")
+
+        # Start with HomeScreen
         self.show_frame("HomeScreen")
+
+    def on_login_success(self, user_data):
+        print("Login successful, transitioning to MainScreen")
+        self.user_data = user_data
+        self.frames["MainScreen"].update_user_info(user_data)
+        self.show_frame("MainScreen")
+
+    def on_register_success(self, user_data):
+        print("Registration successful, transitioning to MainScreen")
+        self.user_data = user_data
+        self.frames["MainScreen"].update_user_info(user_data)
+        self.show_frame("MainScreen")
+
+    def show_register_page(self):
+        print("Navigating to RegisterPage")
+        self.show_frame("RegisterPage")
 
     def show_frame(self, frame_name):
         frame = self.frames[frame_name]
