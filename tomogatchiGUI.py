@@ -137,14 +137,19 @@ class MainScreen(tk.Frame):
         self.after(500, self.animate)
 
     def animate(self):
-        #print("Animating...")
+        print("Animating...")
         spf.sprite_animation(self)  # Call sprite animation
         if not self.stop_animation:
-            self.after(50, self.animate)  # Schedule the next animation cycle
+            self.after(5000000000, self.animate)  # Schedule the next animation cycle
 
     def update_user_info(self, user_data):
+    # Handle missing fields gracefully
+        first_name = user_data.get('first_name', 'Guest')
+        last_name = user_data.get('last_name', '')
+        pet_name = user_data.get('pet', {}).get('name', 'Unknown')
+    
         self.user_label.config(
-            text=f"Welcome, {user_data['first_name']} {user_data['last_name']}!\nYour pet: {user_data['pet']['name']}"
+            text=f"Welcome, {first_name} {last_name}!\nYour pet: {pet_name}"
         )
 
 # TomogatchiApp
