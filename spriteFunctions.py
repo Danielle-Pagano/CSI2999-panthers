@@ -6,7 +6,6 @@ from PIL import ImageTk
 def trigger_animation_update(self, state):
     self.petState = state
     self.is_busy = True
-
     if state == 1:  # Happiness
         application.add_to_bar(self.happiness_bar, 10)
     elif state == 2:  # Hunger
@@ -15,14 +14,16 @@ def trigger_animation_update(self, state):
         application.add_to_bar(self.energy_bar, 20)
 
 def sprite_animation(self):
+    if not hasattr(self, 'animation_initialized'):
+        self.animation_initialized = True
+        self.after(500, lambda: sprite_animation(self))  # Wait for UI rendering
+        return
     if self.is_busy:
         play_activity_animation(self)
         self.is_busy = False
-        self.petState = 0  # Return to idle state
+        self.petState = 0
     else:
         play_idle_animation(self)
-
-    # Schedule the next animation update using `after`
     self.after(50, lambda: sprite_animation(self))
 
 def play_idle_animation(self):
@@ -31,10 +32,8 @@ def play_idle_animation(self):
             update_sprite(self, 0, index)
             if index + 1 < len(self.pet.frame[0]):
                 self.after(300, lambda: update_frame(index + 1))
-            else:
-                if random.randint(0, 100) <= 12:  # Random idle chance
-                    random_idle(self)
-
+            elif random.randint(0, 100) <= 12:  # Random idle chance
+                random_idle(self)
     update_frame(0)
 
 def play_activity_animation(self):
@@ -44,7 +43,6 @@ def play_activity_animation(self):
         update_sprite(self, self.petState, index)
         if index + 1 < len(self.pet.frame[self.petState]):
             self.after(200, lambda: update_frame(index + 1))
-
     update_frame(0)
 
 def random_idle(self):
@@ -53,7 +51,6 @@ def random_idle(self):
             update_sprite(self, 4, index)
             if index + 1 < len(self.pet.frame[4]):
                 self.after(200, lambda: update_frame(index + 1))
-
     update_frame(0)
 
 def update_sprite(self, y, frame_index):
