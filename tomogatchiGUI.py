@@ -64,15 +64,12 @@ class HomeScreen(tk.Frame):
         register_button.place(relx=0.6, rely=0.5, anchor='center')
 
 # MainScreen frame
+# MainScreen frame
 class MainScreen(tk.Frame):
     def __init__(self, parent, controller):
         super().__init__(parent)
         self.controller = controller
         self.place(relwidth=1, relheight=1)
-
-        # Label for displaying user info
-        self.user_label = tk.Label(self, text="", font=("Helvetica", 15))
-        self.user_label.place(x=20, y=20)
 
         # Setting up animation attributes
         self.petState = 0
@@ -133,24 +130,39 @@ class MainScreen(tk.Frame):
             cursor='hand2'
         ).place(x=35, y=322)
 
-        # Initialize animations after rendering
-        self.after(500, self.animate)
+        # Label for displaying user info (moved below buttons)
+        self.user_label = tk.Label(
+            self,
+            text="",
+            font=("Helvetica", 15),
+            fg="white",
+            bg="black",
+            borderwidth=3,
+            relief="solid",
+            justify="center",
+            anchor="center",
+            padx=10,
+            pady=10
+        )
+        self.user_label.place(x=20, y=380, width=300, height=100)
 
     def animate(self):
         print("Animating...")
         spf.sprite_animation(self)  # Call sprite animation
         if not self.stop_animation:
-            self.after(5000000000, self.animate)  # Schedule the next animation cycle
+            self.after(5000, self.animate)  # Schedule the next animation cycle
 
     def update_user_info(self, user_data):
-    # Handle missing fields gracefully
+        # Handle missing fields gracefully
         first_name = user_data.get('first_name', 'Guest')
         last_name = user_data.get('last_name', '')
         pet_name = user_data.get('pet', {}).get('name', 'Unknown')
-    
+
+        # Update user_label with styled and spaced text
         self.user_label.config(
-            text=f"Welcome, {first_name} {last_name}!\nYour pet: {pet_name}"
+            text=f"Welcome,\n{first_name} {last_name}\nPet: {pet_name}"
         )
+
 
 # TomogatchiApp
 class TomogatchiApp(tk.Tk):

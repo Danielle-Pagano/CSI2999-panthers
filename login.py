@@ -48,7 +48,7 @@ class LoginPage(ttk.Frame):
             users = db.child("users").get().val()
             if users:
                 for user_id, user_data in users.items():
-                    if user_data['emial'] == email and user_data['password'] == password:
+                    if user_data['email'] == email and user_data['password'] == password:  # Corrected key
                         self.on_login_success(user_data)
                         return
             self.login_status_label.config(text="Invalid email or password")

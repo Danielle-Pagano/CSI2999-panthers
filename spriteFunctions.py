@@ -16,7 +16,7 @@ def trigger_animation_update(self, state):
 def sprite_animation(self):
     if not hasattr(self, 'animation_initialized'):
         self.animation_initialized = True
-        self.after(500, lambda: sprite_animation(self))  # Wait for UI rendering
+        self.after(1000, lambda: sprite_animation(self))  # Wait for UI rendering
         return
     if self.is_busy:
         play_activity_animation(self)
@@ -24,14 +24,14 @@ def sprite_animation(self):
         self.petState = 0
     else:
         play_idle_animation(self)
-    self.after(50, lambda: sprite_animation(self))
+    self.after(1000, lambda: sprite_animation(self))
 
 def play_idle_animation(self):
     def update_frame(index):
         if not self.is_busy:
             update_sprite(self, 0, index)
             if index + 1 < len(self.pet.frame[0]):
-                self.after(300, lambda: update_frame(index + 1))
+                self.after(150, lambda: update_frame(index + 1))
             elif random.randint(0, 100) <= 12:  # Random idle chance
                 random_idle(self)
     update_frame(0)
@@ -42,7 +42,7 @@ def play_activity_animation(self):
             return
         update_sprite(self, self.petState, index)
         if index + 1 < len(self.pet.frame[self.petState]):
-            self.after(200, lambda: update_frame(index + 1))
+            self.after(1000, lambda: update_frame(index + 1))
     update_frame(0)
 
 def random_idle(self):
@@ -50,7 +50,7 @@ def random_idle(self):
         if not self.is_busy:
             update_sprite(self, 4, index)
             if index + 1 < len(self.pet.frame[4]):
-                self.after(200, lambda: update_frame(index + 1))
+                self.after(1000, lambda: update_frame(index + 1))
     update_frame(0)
 
 def update_sprite(self, y, frame_index):
