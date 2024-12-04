@@ -85,6 +85,42 @@ class MainScreen(tk.Frame):
         # Start the animation with after
         self.animate()
 
+        # Happiness bar
+        self.happiness_bar = tb.Progressbar(
+            self,
+            value=100,
+            orient="horizontal",
+            bootstyle="primary-striped",
+            length=200,
+            mode="determinate"
+        )
+        self.happiness_bar.place(x=325, y=265)
+
+        # Hunger bar
+        self.hunger_bar = tb.Progressbar(
+            self,
+            value=100,
+            orient="horizontal",
+            bootstyle="success-striped",
+            length=200,
+            mode="determinate"
+        )
+        self.hunger_bar.place(x=325, y=315)
+
+        # Energy bar
+        self.energy_bar = tb.Progressbar(
+            self,
+            value=100,
+            orient="horizontal",
+            bootstyle="warning-striped",
+            length=200,
+            mode="determinate"
+        )
+        self.energy_bar.place(x=325, y=365)
+
+        # Initialize progress bars
+        self.initialize_progress_bars()
+
         # Load button icons
         self.tb_size = (42, 42)
         self.sleep_icon = display_image("button_icons/sleep_button.png", size=self.tb_size)
@@ -145,6 +181,11 @@ class MainScreen(tk.Frame):
             pady=10
         )
         self.user_label.place(x=20, y=380, width=300, height=100)
+
+    def initialize_progress_bars(self):
+        application.update_bar(self.happiness_bar, 100)
+        application.update_bar(self.hunger_bar, 100)
+        application.update_bar(self.energy_bar, 100)
 
     def animate(self):
         print("Animating...")

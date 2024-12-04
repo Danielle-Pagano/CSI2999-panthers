@@ -7,11 +7,22 @@ def trigger_animation_update(self, state):
     self.petState = state
     self.is_busy = True
     if state == 1:  # Happiness
-        application.add_to_bar(self.happiness_bar, 10)
+        if hasattr(self, 'happiness_bar'):
+            application.add_to_bar(self.happiness_bar, 10)
+        else:
+            print("Happiness bar is not initialized.")
+
     elif state == 2:  # Hunger
-        application.add_to_bar(self.hunger_bar, 15)
+        if hasattr(self, 'hunger_bar'):
+            application.add_to_bar(self.hunger_bar, 15)
+        else:
+            print("Hunger bar is not initialized.")
+
     elif state == 3:  # Energy
-        application.add_to_bar(self.energy_bar, 20)
+        if hasattr(self, 'energy_bar'):
+            application.add_to_bar(self.energy_bar, 20)
+        else:
+            print("Energy bar is not initialized.")
 
 def sprite_animation(self):
     if not hasattr(self, 'animation_initialized'):
