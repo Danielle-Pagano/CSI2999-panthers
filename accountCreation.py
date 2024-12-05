@@ -1,7 +1,7 @@
 import tkinter as tk
+from tkinter import ttk
 
-
-available_animals = ["Squirrel"]
+available_animals = ["Squirrel", "Pigeon"]
 
 def valid_firstname(first_name_entry):
         first_name = first_name_entry.get().strip()
@@ -38,22 +38,29 @@ def valid_requirements(firstname_entry, lastname_entry, password_entry, email_en
     return (valid_firstname(firstname_entry) and valid_lastname(lastname_entry) and valid_password(password_entry) and valid_email(email_entry)
             and valid_animal(animal_entry) and valid_animal_name(animal_name_entry) and valid_age(age_entry))
 
-def requirements_met(parent, controller, firstname_entry, lastname_entry, password_entry, email_entry, animal_entry, animal_name_entry, age_entry):
-    if (not firstname_entry.get().strip() or not lastname_entry.get().strip() or not email_entry.get().strip() or not password_entry.get().strip()
+def requirements_met(parent, controller, x_place, y_place, firstname_entry, lastname_entry, password_entry, email_entry, animal_entry, animal_name_entry, age_entry):
+    
+      for widget in parent.place_slaves():
+        if isinstance(widget, tk.Label):
+            widget.place_forget()
+    
+      if (not firstname_entry.get().strip() or not lastname_entry.get().strip() or not email_entry.get().strip() or not password_entry.get().strip()
         or not animal_entry.get().strip() or not animal_name_entry.get().strip() or not age_entry.get().strip()):
           
-          error_message = tk.Label(parent, text="Please fill all required fields", bg="#fff",fg='red')
-          error_message.grid(row=2, column=0, sticky='n', pady=(5,0))
+          error_message = ttk.Label(parent, text="Please fill all required fields", foreground='red')
+          error_message.place(x=x_place, y=y_place)
           return False
-    
-    if not valid_requirements(firstname_entry, lastname_entry, password_entry, email_entry, animal_entry, animal_name_entry, age_entry):
-          error_message = tk.Label(parent, text="One or more fields are invalid", bg='#fff', fg='red')
-          error_message.grid(row=2, column=0, sticky = 'n', pady=(5,0))
-          return False
-    
-    for widget in parent.grid_slaves(row=2, column=0):
-          if isinstance(widget, tk.Label):
-                widget.grid_forget()
 
-    controller.show_frame("SaveFileScreen")
-    return True
+      if not valid_requirements(firstname_entry, lastname_entry, password_entry, email_entry, animal_entry, animal_name_entry, age_entry):
+          error_message = ttk.Label(parent, text="One or more fields are invalid",foreground='red')
+          error_message.place(x=x_place, y=y_place)
+          return False
+    
+      for widget in parent.place_slaves():
+            if isinstance(widget, tk.Label):
+                  info = widget.place_info()
+                  if info['x'] == str(x_place) and info['y'] == str(y_place):
+                        widget.place_forget()
+
+      controller.show_frame("SaveFileScreen")
+      return True

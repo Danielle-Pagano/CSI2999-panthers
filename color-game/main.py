@@ -175,7 +175,6 @@ def drawButtons():
     pygame.draw.rect(DISPLAYSURF, GREEN,  GREENRECT)
 
 def gameOverAnimation(color=WHITE, animationSpeed=50):
-    # flash the background
     origSurf = DISPLAYSURF.copy()
     flashSurf = pygame.Surface(DISPLAYSURF.get_size())
     flashSurf = flashSurf.convert_alpha()
