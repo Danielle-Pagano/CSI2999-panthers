@@ -4,9 +4,12 @@ from tkinter.font import Font
 import ttkbootstrap as tb
 from PIL import Image, ImageTk
 import os
+
 import spriteFunctions as spf
 import application
 from Sprite_Stuff import SpriteSheetFramework as sprite
+import threading
+
 from login import LoginPage
 from register import RegisterPage
 
@@ -81,9 +84,7 @@ class MainScreen(tk.Frame):
         # Initialize animation control flags
         self.stop_animation = False  # Control flag for sprite animation
         self.is_busy = False  # Flag to indicate whether the pet is busy
-
-        # Start the animation with after
-        self.animate()
+        threading.Thread(target=lambda: spf.sprite_animation(self)).start()
 
         # Happiness bar
         self.happiness_bar = tb.Progressbar(
@@ -187,11 +188,13 @@ class MainScreen(tk.Frame):
         application.update_bar(self.hunger_bar, 100)
         application.update_bar(self.energy_bar, 100)
 
+    """
     def animate(self):
         print("Animating...")
         spf.sprite_animation(self)  # Call sprite animation
         if not self.stop_animation:
             self.after(5000, self.animate)  # Schedule the next animation cycle
+    """
 
     def update_user_info(self, user_data):
         # Handle missing fields gracefully
