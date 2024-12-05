@@ -11,6 +11,7 @@ import threading
 import spriteFunctions as spf
 import accountCreation, application
 from Sprite_Stuff import SpriteSheetFramework as sprite
+from Color_game import main as game
 
 cd = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
@@ -224,7 +225,7 @@ class MainScreen(tk.Frame):
             self,
             image=self.play_icon,
             bootstyle="primary",
-            command=lambda: spf.trigger_animation_update(self, 1),
+            command=lambda: threading.Thread(target=lambda:game.main()).start(),
             cursor='hand2'
         ).place(x=35, y=258)
 
@@ -315,8 +316,7 @@ class MainScreen(tk.Frame):
         
         self.energy_bar["maximum"] = self.countdown_time
         self.energy_bar["value"] = self.countdown_time
-        application.update_bar(self.energy_bar, 100)
-    
+        application.update_bar(self.energy_bar, 100)  
 
 class TomogatchiApp(tk.Tk):
     def __init__(self):
