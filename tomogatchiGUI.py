@@ -67,7 +67,6 @@ class HomeScreen(tk.Frame):
         register_button.place(relx=0.6, rely=0.5, anchor='center')
 
 # MainScreen frame
-# MainScreen frame
 class MainScreen(tk.Frame):
     def __init__(self, parent, controller):
         super().__init__(parent)
@@ -188,13 +187,6 @@ class MainScreen(tk.Frame):
         application.update_bar(self.hunger_bar, 100)
         application.update_bar(self.energy_bar, 100)
 
-    """
-    def animate(self):
-        print("Animating...")
-        spf.sprite_animation(self)  # Call sprite animation
-        if not self.stop_animation:
-            self.after(5000, self.animate)  # Schedule the next animation cycle
-    """
 
     def update_user_info(self, user_data):
         # Handle missing fields gracefully
