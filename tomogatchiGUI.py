@@ -8,7 +8,9 @@ import os
 import spriteFunctions as spf
 import application
 from Sprite_Stuff import SpriteSheetFramework as sprite
-import threading
+import threading, time
+
+from Color_game import main as game
 
 from login import LoginPage
 from register import RegisterPage
@@ -75,7 +77,7 @@ class MainScreen(tk.Frame):
 
         # Setting up animation attributes
         self.petState = 0
-        self.pet = sprite.Animal(0)  # Choose the animal (0 for squirrel, 1 for pigeon)
+        self.pet = sprite.Animal(1)  # Choose the animal (0 for squirrel, 1 for pigeon)
         self.image_label = tk.Label(self)
         self.image_label.place(x=200, y=50)
         self.current_img = None
@@ -137,7 +139,7 @@ class MainScreen(tk.Frame):
             self,
             image=self.play_icon,
             bootstyle="primary",
-            command=lambda: spf.trigger_animation_update(self, 1),
+            command=lambda:self.playGame(),
             cursor='hand2'
         ).place(x=35, y=258)
 
@@ -162,7 +164,7 @@ class MainScreen(tk.Frame):
             self,
             image=self.home_icon,
             bootstyle='secondary',
-            command=lambda: controller.show_frame("HomeScreen"),
+            command=self.homeButton,
             cursor='hand2'
         ).place(x=35, y=322)
 
@@ -181,6 +183,17 @@ class MainScreen(tk.Frame):
             pady=10
         )
         self.user_label.place(x=20, y=380, width=300, height=100)
+
+    def playGame(self):
+        spf.trigger_animation_update(self, 1)
+        threading.Thread(target=lambda: game.main()).start()
+
+    def homeButton(self):
+        def home():
+            time.sleep(3)
+            self.controller.show_frame("HomeScreen")
+        spf.trigger_animation_update(self, 1)
+        threading.Thread(target=home).start()
 
     def initialize_progress_bars(self):
         application.update_bar(self.happiness_bar, 100)
