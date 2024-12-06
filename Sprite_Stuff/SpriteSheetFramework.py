@@ -5,7 +5,7 @@ from PIL import Image
 def count_files(directory):
     return len([f for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f))])
 cd = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
-dp = cd + "\SpriteFolder"
+dp = cd + "/SpriteFolder"
 file_count = count_files(dp)
 
 #List of all animals
