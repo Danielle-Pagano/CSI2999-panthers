@@ -191,7 +191,7 @@ class MainScreen(tk.Frame):
         def home():
             time.sleep(3)
             self.controller.show_frame("HomeScreen")
-        spf.trigger_animation_update(self, 1)
+        spf.home_animation(self, 1)
         threading.Thread(target=home).start()
 
     def initialize_progress_bars(self):
