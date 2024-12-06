@@ -206,7 +206,27 @@ class MainScreen(tk.Frame):
         # Start the animation thread
         self.stop_animation = False
         self.is_busy = False
-        threading.Thread(target=lambda: spf.sprite_animation(self)).start()
+
+        ###################################################################
+        #NAT'S THREADING LOGIC (KEEP)
+        ###################################################################
+        #threading.Thread(target=lambda: spf.sprite_animation(self)).start()
+        ###################################################################
+        #NAT'S THREADING LOGIC 
+        ###################################################################
+
+        ###################################################################
+        #THREADING LOGIC THAT POSSIBLY FIXES ATTRUBUTE ERROR
+        ###################################################################
+        self.animation_thread = threading.Thread(target=lambda: spf.sprite_animation(self), daemon=True)
+        self.after(100, self.animation_thread.start)
+        ###################################################################
+        #THREADING LOGIC THAT POSSIBLY FIXES ATTRUBUTE ERROR
+        ###################################################################
+
+
+
+
 
         # Load button icons
         self.tb_size = (42,42)
@@ -391,6 +411,19 @@ class TomogatchiApp(tk.Tk):
     def show_frame(self, frame_name):
         frame = self.frames[frame_name]
         frame.tkraise()
+
+    ###################################################################
+    #THREADING LOGIC THAT POSSIBLY FIXES ATTRUBUTE ERROR
+    ###################################################################
+    def destroy(self):
+        # Notify MainScreen to stop the animation
+        if "MainScreen" in self.frames:
+            self.frames["MainScreen"].stop_animation = True
+        super().destroy() 
+    ###################################################################
+    #THREADING LOGIC THAT POSSIBLY FIXES ATTRUBUTE ERROR
+    ###################################################################
+
 
 if __name__ == "__main__":
     app = TomogatchiApp()
