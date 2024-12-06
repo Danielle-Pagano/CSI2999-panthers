@@ -74,10 +74,12 @@ class MainScreen(tk.Frame):
         super().__init__(parent)
         self.controller = controller
         self.place(relwidth=1, relheight=1)
-
         # Initialize attributes
         self.petState = 0
-        self.pet = sprite.Animal(1)  # Choose the animal (0 for squirrel, 1 for pigeon)
+        self.pet = sprite.Animal(0)  # Will be initialized later in update_user_info
+        self.stop_animation = False  # Control flag for sprite animation
+        self.is_busy = False  # Flag to indicate whether the pet is busy
+
         self.image_label = tk.Label(self)
         self.image_label.place(x=200, y=50)
         self.current_img = None
@@ -217,9 +219,10 @@ class MainScreen(tk.Frame):
         pet_type_index = 0 if pet_type == 'squirrel' else 1
         self.pet = sprite.Animal(pet_type_index)
 
-        # Initialize pet animation if needed
-        if not self.stop_animation:
-            threading.Thread(target=lambda: spf.sprite_animation(self)).start()
+        # Initialize pet animation if needed 
+        ### This breaks the animation ###
+        #if not self.stop_animation:
+            #threading.Thread(target=lambda: spf.sprite_animation(self)).start()
         ####################################################
         # NEW LOGIC FOR CHOOSING PETS WHEN RREGISTERING
         ####################################################
