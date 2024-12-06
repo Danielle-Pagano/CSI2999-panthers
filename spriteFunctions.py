@@ -17,6 +17,10 @@ def trigger_animation_update(self, state):
     elif state == 3:  # Energy
         application.add_to_bar(self.energy_bar, 20)
 
+def home_animation(self, state):
+    self.petState = state
+    self.is_busy = True
+
 def sprite_animation(self):
     global revived
     # Run this in a loop to handle animation
