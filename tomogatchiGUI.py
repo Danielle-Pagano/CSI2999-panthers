@@ -54,11 +54,11 @@ class HomeScreen(tk.Frame):
         home_separator = ttk.Separator(self, orient='horizontal')
         home_separator.pack(fill='x')
         
-        start_button = tb.Button(self, text="START", bootstyle='success',
+        start_button = tb.Button(self, text="LOGIN", bootstyle='success',
                                  command=lambda: controller.show_frame("SaveFileScreen"), cursor='hand2')
         start_button.place(relx=0.4, rely=0.5, anchor='center')
         
-        signup_button = tb.Button(self, text="SIGN UP", bootstyle='info',
+        signup_button = tb.Button(self, text="REGISTER", bootstyle='info',
                                   command=lambda: controller.show_frame("SignUpScreen"), cursor='hand2')
         signup_button.place(relx=0.6, rely=0.5, anchor='center')
 
