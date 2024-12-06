@@ -95,5 +95,12 @@ class RegisterPage(ttk.Frame):
             db.child("users").push(user_data)
             self.status_label.config(text="Registration successful!", bootstyle="success")
             self.on_register_success(user_data)
+            ###############################
+            #CALL TO NAVIGATE TO HOMESCREEN
+            ###############################
+            self.controller.show_frame("MainScreen")
+            ###############################
+            #CALL TO NAVIGATE TO HOMESCREEN
+            ###############################
         except Exception as e:
             self.status_label.config(text=f"Error: {str(e)}")

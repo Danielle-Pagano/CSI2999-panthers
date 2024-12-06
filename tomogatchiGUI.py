@@ -389,6 +389,7 @@ class TomogatchiApp(tk.Tk):
         ##################################################################
         # Add RegisterPage separately with its required argument
         register_frame = RegisterPage(self, self, handle_register_success)
+        register_frame.controller = self  # Explicitly set the controller attribute
         self.frames["RegisterPage"] = register_frame
         register_frame.grid(row=0, column=0, sticky="nsew")
         ##################################################################
@@ -401,6 +402,7 @@ class TomogatchiApp(tk.Tk):
         # Add RegisterPage separately with its required argument
         login_frame = LoginPage(self, handle_login_success, self, show_register_page)
         self.frames["LoginPage"] = login_frame
+        login_frame.controller = self
         login_frame.grid(row=0, column=0, sticky="nsew")
         ##################################################################
         #LOGIC  TO HANDLE REGISTER FORM

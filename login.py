@@ -50,6 +50,13 @@ class LoginPage(ttk.Frame):
                 for user_id, user_data in users.items():
                     if user_data['email'] == email and user_data['password'] == password:  # Corrected key
                         self.on_login_success(user_data)
+                        ###############################
+                        #CALL TO NAVIGATE TO HOMESCREEN
+                        ###############################
+                        self.controller.show_frame("MainScreen")
+                        ###############################
+                        #CALL TO NAVIGATE TO HOMESCREEN
+                        ###############################
                         return
             self.login_status_label.config(text="Invalid email or password")
         except Exception as e:
