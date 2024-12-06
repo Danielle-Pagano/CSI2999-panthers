@@ -75,16 +75,13 @@ class MainScreen(tk.Frame):
         self.controller = controller
         self.place(relwidth=1, relheight=1)
 
-        # Setting up animation attributes
+        # Initialize attributes
         self.petState = 0
         self.pet = sprite.Animal(1)  # Choose the animal (0 for squirrel, 1 for pigeon)
         self.image_label = tk.Label(self)
         self.image_label.place(x=200, y=50)
         self.current_img = None
 
-        # Initialize animation control flags
-        self.stop_animation = False  # Control flag for sprite animation
-        self.is_busy = False  # Flag to indicate whether the pet is busy
         threading.Thread(target=lambda: spf.sprite_animation(self)).start()
 
         # Happiness bar
@@ -200,18 +197,32 @@ class MainScreen(tk.Frame):
         application.update_bar(self.hunger_bar, 100)
         application.update_bar(self.energy_bar, 100)
 
-
     def update_user_info(self, user_data):
-        # Handle missing fields gracefully
+        # Extract user information
         first_name = user_data.get('first_name', 'Guest')
         last_name = user_data.get('last_name', '')
-        pet_name = user_data.get('pet', {}).get('name', 'Unknown')
+        pet_data = user_data.get('pet', {})
+        pet_name = pet_data.get('name', 'Unknown')
+        pet_type = pet_data.get('type', 'squirrel').lower()
 
         # Update user_label with styled and spaced text
         self.user_label.config(
             text=f"Welcome,\n{first_name} {last_name}\nPet: {pet_name}"
         )
 
+        ####################################################
+        # NEW LOGIC FOR CHOOSING PETS WHEN RREGISTERING
+        ####################################################
+        # Set pet type dynamically (0 for squirrel, 1 for pigeon)
+        pet_type_index = 0 if pet_type == 'squirrel' else 1
+        self.pet = sprite.Animal(pet_type_index)
+
+        # Initialize pet animation if needed
+        if not self.stop_animation:
+            threading.Thread(target=lambda: spf.sprite_animation(self)).start()
+        ####################################################
+        # NEW LOGIC FOR CHOOSING PETS WHEN RREGISTERING
+        ####################################################
 
 # TomogatchiApp
 class TomogatchiApp(tk.Tk):
