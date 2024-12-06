@@ -3,7 +3,7 @@ from ttkbootstrap.constants import *
 from shared_firebase import db  # Shared Firebase database object
 
 class LoginPage(ttk.Frame):
-    def __init__(self, parent, on_login_success, show_register_page):
+    def __init__(self, parent, on_login_success, controller, show_register_page):
         super().__init__(parent)
         self.on_login_success = on_login_success
         self.show_register_page = show_register_page

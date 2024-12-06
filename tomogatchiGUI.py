@@ -6,6 +6,8 @@ import ttkbootstrap as tb
 from PIL import Image, ImageTk, ImageFont
 import os as os
 import threading
+from register import RegisterPage
+from login import LoginPage
 
 
 import spriteFunctions as spf
@@ -54,13 +56,13 @@ class HomeScreen(tk.Frame):
         home_separator = ttk.Separator(self, orient='horizontal')
         home_separator.pack(fill='x')
         
-        start_button = tb.Button(self, text="LOGIN", bootstyle='success',
-                                 command=lambda: controller.show_frame("SaveFileScreen"), cursor='hand2')
-        start_button.place(relx=0.4, rely=0.5, anchor='center')
+        login_button = tb.Button(self, text="LOGIN", bootstyle='success',
+                                 command=lambda: controller.show_frame("LoginPage"), cursor='hand2')
+        login_button.place(relx=0.4, rely=0.5, anchor='center')
         
-        signup_button = tb.Button(self, text="REGISTER", bootstyle='info',
-                                  command=lambda: controller.show_frame("SignUpScreen"), cursor='hand2')
-        signup_button.place(relx=0.6, rely=0.5, anchor='center')
+        register_button = tb.Button(self, text="REGISTER", bootstyle='info',
+                                  command=lambda: controller.show_frame("RegisterPage"), cursor='hand2')
+        register_button.place(relx=0.6, rely=0.5, anchor='center')
 
 #signup screen frame
 class SignUpScreen(tk.Frame):
@@ -323,12 +325,66 @@ class TomogatchiApp(tk.Tk):
         super().__init__()
         self.title("Tomogatchi")
         self.resizable(False, False)
+
+        ##################################################################
+        #LOGIC TO HANDLE LOGIN FORM
+        ##################################################################
+        # Function to handle successful LOGIN
+        def handle_login_success(data):
+            print("Registration successful:", data)  # Replace with desired functionality
+        ##################################################################
+        #LOGIC TO HANDLE LOGIN FORM
+        ################################################################## 
+
+        ##################################################################
+        #LOGIC TO HANDLE LOGIN FORM
+        ##################################################################
+        # Function to show the RegisterPage from LoginPage
+        def show_register_page():
+            self.show_frame("RegisterPage")
+        ##################################################################
+        #LOGIC TO HANDLE LOGIN FORM
+        ##################################################################  
+ 
+
+        ##################################################################
+        #LOGIC TO HANDLE REGISTER FORM
+        ##################################################################
+        # Function to handle successful registration
+        def handle_register_success(data):
+            print("Registration successful:", data)  # Replace with desired functionality
+        ##################################################################
+        #LOGIC TO HANDLE REGISTER FORM
+        ##################################################################    
         
         self.frames = {}
         for FrameClass in (HomeScreen, SignUpScreen, SaveFileScreen, MainScreen):
             frame = FrameClass(self, self)
             self.frames[FrameClass.__name__] = frame
             frame.grid(row=0, column=0, sticky="nsew")
+
+
+        ##################################################################
+        #LOGIC TO HANDLE REGISTER FORM
+        ##################################################################
+        # Add RegisterPage separately with its required argument
+        register_frame = RegisterPage(self, self, handle_register_success)
+        self.frames["RegisterPage"] = register_frame
+        register_frame.grid(row=0, column=0, sticky="nsew")
+        ##################################################################
+        #LOGIC  TO HANDLE REGISTER FORM
+        ##################################################################
+
+        ##################################################################
+        #LOGIC TO HANDLE REGISTER FORM
+        ##################################################################
+        # Add RegisterPage separately with its required argument
+        login_frame = LoginPage(self, handle_login_success, self, show_register_page)
+        self.frames["LoginPage"] = login_frame
+        login_frame.grid(row=0, column=0, sticky="nsew")
+        ##################################################################
+        #LOGIC  TO HANDLE REGISTER FORM
+        ##################################################################
         
         self.show_frame("HomeScreen")
 
