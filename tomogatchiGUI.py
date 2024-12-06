@@ -331,7 +331,7 @@ class TomogatchiApp(tk.Tk):
         ##################################################################
         # Function to handle successful LOGIN
         def handle_login_success(data):
-            print("Registration successful:", data)  # Replace with desired functionality
+            print("Login successful:", data)  # Replace with desired functionality
         ##################################################################
         #LOGIC TO HANDLE LOGIN FORM
         ################################################################## 
