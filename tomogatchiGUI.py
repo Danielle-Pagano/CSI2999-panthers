@@ -40,19 +40,19 @@ class HomeScreen(tk.Frame):
         self.controller = controller
         self.grid(row=0, column=0, sticky='nsew')
 
-        semibold_font = import_custom_font("SemiBold.ttf", 30)
-        title_label = tb.Label(self, text="Tomogatchi", anchor="n", font=semibold_font)
-        title_label.pack(padx=10, pady=10)
-
         # Background on home screen
         background_image = display_image("backgroundPic.jpg")
         background_label = tk.Label(self, image=background_image)
         background_label.image = background_image
-        background_label.pack(fill="both", expand=True)
+        background_label.place(relx=0, rely=0, relwidth=1, relheight=1)
+
+        semibold_font = import_custom_font("SemiBold.ttf", 30)
+        title_label = tb.Label(self, text="Tomogatchi", anchor="n", font=semibold_font)
+        title_label.pack(padx=10, pady=10)
         
-        # Separator
-        home_separator = ttk.Separator(self, orient='horizontal')
-        home_separator.pack(fill='x')
+        # # Separator
+        # home_separator = ttk.Separator(self, orient='horizontal')
+        # home_separator.pack(fill='x')
         
         # Login Button
         login_button = tb.Button(
@@ -81,8 +81,10 @@ class MainScreen(tk.Frame):
         self.is_busy = False  # Flag to indicate whether the pet is busy
 
         self.image_label = tk.Label(self)
-        self.image_label.place(x=200, y=50)
+        self.image_label.place(x=275, y=50)
         self.current_img = None
+
+        threading.Thread(target=lambda: spf.sprite_animation(self)).start()
 
         # Happiness bar
         self.happiness_bar = tb.Progressbar(
@@ -90,10 +92,17 @@ class MainScreen(tk.Frame):
             value=100,
             orient="horizontal",
             bootstyle="primary-striped",
-            length=200,
+            length=150,
             mode="determinate"
         )
-        self.happiness_bar.place(x=325, y=265)
+        self.happiness_bar.place(x=475, y=270)
+
+        self.happiness_label = tk.Label(
+            self,
+            text="Happiness",
+            font=("Helvetica", 12)
+        )
+        self.happiness_label.place(x=475,y=245)
 
         # Hunger bar
         self.hunger_bar = tb.Progressbar(
@@ -101,10 +110,17 @@ class MainScreen(tk.Frame):
             value=100,
             orient="horizontal",
             bootstyle="success-striped",
-            length=200,
+            length=150,
             mode="determinate"
         )
-        self.hunger_bar.place(x=325, y=315)
+        self.hunger_bar.place(x=475, y=320)
+
+        self.happiness_label = tk.Label(
+            self,
+            text="Hunger",
+            font=("Helvetica", 12)
+        )
+        self.happiness_label.place(x=475,y=295)
 
         # Energy bar
         self.energy_bar = tb.Progressbar(
@@ -112,13 +128,23 @@ class MainScreen(tk.Frame):
             value=100,
             orient="horizontal",
             bootstyle="warning-striped",
-            length=200,
+            length=150,
             mode="determinate"
         )
-        self.energy_bar.place(x=325, y=365)
+        self.energy_bar.place(x=475, y=370)
+
+        self.happiness_label = tk.Label(
+            self,
+            text="Energy",
+            font=("Helvetica", 12)
+        )
+        self.happiness_label.place(x=475,y=345)
+
+        # Initialize progress bars
+        self.initialize_progress_bars()
 
         # Load button icons
-        self.tb_size = (42, 42)
+        self.tb_size = (48, 48)
         self.sleep_icon = display_image("button_icons/sleep_button.png", size=self.tb_size)
         self.eat_icon = display_image("button_icons/eat_button.png", size=self.tb_size)
         self.play_icon = display_image("button_icons/play_button.png", size=self.tb_size)
@@ -135,13 +161,13 @@ class MainScreen(tk.Frame):
             bootstyle="primary",
             command=lambda:self.playGame(),
             cursor='hand2'
-        ).place(x=35, y=258)
+        ).place(x=25, y=258)
 
         tb.Button(  # Eat
             self,
             image=self.eat_icon,
             bootstyle="success",
-            command=lambda: spf.trigger_animation_update(self, 2),
+            command=lambda:self.food_popup(50,200),
             cursor='hand2'
         ).place(x=110, y=258)
 
@@ -151,7 +177,7 @@ class MainScreen(tk.Frame):
             bootstyle="warning",
             command=lambda: spf.trigger_animation_update(self, 3),
             cursor='hand2'
-        ).place(x=110, y=322)
+        ).place(x=110, y=332)
 
         # Home button at the bottom-left corner
         tb.Button(
@@ -160,13 +186,13 @@ class MainScreen(tk.Frame):
             bootstyle='secondary',
             command=self.homeButton,
             cursor='hand2'
-        ).place(x=35, y=322)
+        ).place(x=25, y=332)
 
         # Label for displaying user info (moved below buttons)
         self.user_label = tk.Label(
             self,
             text="",
-            font=("Helvetica", 15),
+            font=("Helvetica", 12),
             fg="white",
             bg="black",
             borderwidth=3,
@@ -176,7 +202,46 @@ class MainScreen(tk.Frame):
             padx=10,
             pady=10
         )
-        self.user_label.place(x=20, y=380, width=300, height=100)
+        self.user_label.place(x=200, y=275, width=250, height=75)
+
+    def food_popup(self,x_position, y_position):
+        food_frame = tk.Toplevel(self)
+        food_frame.title("Choose Food")
+        food_frame.geometry(f"200x100+{self.winfo_x() + x_position}+{self.winfo_y() + y_position}")
+        food_frame.transient(self)  # Make the pop-up stay on top of the parent window
+        food_frame.grab_set()
+        
+        self.food_size = (40,40)
+        self.acorn_image = display_image("food_items/acorn.png", size=self.food_size)
+        self.seed_image = display_image("food_items/seeds.png", size=self.food_size)
+
+        style = ttk.Style()
+        style.configure(
+        "FoodButton.TButton", 
+        borderwidth=0,  # Remove border
+        background="white",  # Match background
+        padding=0  # Remove padding around the image
+        )
+
+        
+        ttk.Button(
+            food_frame,
+            image=self.acorn_image,
+            cursor='hand2',
+            style="FoodButton.TButton", 
+            command=lambda:self.feed_pet(food_frame)
+            ).place(x=25,y=25)
+        ttk.Button(
+            food_frame, 
+            image=self.seed_image, 
+            cursor='hand2',
+            style="FoodButton.TButton",
+            command=lambda:self.feed_pet(food_frame)
+            ).place(x=110,y=25)
+
+    def feed_pet(self, popup):
+        popup.destroy()
+        spf.trigger_animation_update(self, 2)
 
     def playGame(self):
         spf.trigger_animation_update(self, 1)
@@ -222,17 +287,16 @@ class MainScreen(tk.Frame):
         # NEW LOGIC FOR CHOOSING PETS WHEN RREGISTERING
         ####################################################
 
-    def mainStart(self):
-        print("Loaded Main")
-        self.initialize_progress_bars()
-        threading.Thread(target=lambda: spf.sprite_animation(self)).start()
-        
 # TomogatchiApp
 class TomogatchiApp(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("Tomogatchi")
         self.resizable(False, False)
+        self.geometry("650x425")
+
+        self.rowconfigure(0, weight=1)
+        self.columnconfigure(0, weight=1)
 
         # Initialize user data
         self.user_data = None
@@ -256,14 +320,12 @@ class TomogatchiApp(tk.Tk):
         print("Login successful, transitioning to MainScreen")
         self.user_data = user_data
         self.frames["MainScreen"].update_user_info(user_data)
-        self.frames["MainScreen"].mainStart()
         self.show_frame("MainScreen")
 
     def on_register_success(self, user_data):
         print("Registration successful, transitioning to MainScreen")
         self.user_data = user_data
         self.frames["MainScreen"].update_user_info(user_data)
-        self.frames["MainScreen"].mainStart()
         self.show_frame("MainScreen")
 
     def show_register_page(self):
