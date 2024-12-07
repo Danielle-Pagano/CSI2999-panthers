@@ -191,17 +191,41 @@ class SaveFileScreen(tk.Frame):
             cursor='hand2').place(x=30,y=325)
 
 class MainScreen(tk.Frame):
-    def __init__(self, parent, controller):
+    def __init__(self, parent, controller,pet_type="squirrel"): #passed default value of squirrel
         super().__init__(parent)
         self.controller = controller
         self.place(relwidth=1, relheight=1) 
 
+        ######################################################
+        # Map pet types to indices
+        ######################################################
+        pet_type_mapping = {"squirrel": 0, "pigeon": 1}
+        pet_index = pet_type_mapping.get(pet_type.lower(), 0)
+        ######################################################
+        # Map pet types to indices
+        ######################################################
+
+        # Setting up animation and label
+        self.petState = 0
+        self.pet = sprite.Animal(pet_index)  # Use pet_index based on chosen pet
+        self.image_label = tk.Label(self)
+        self.image_label.place(x=200, y=50)
+        self.current_img = None
+
+        #####################################################################################################
+        #NAT'S ANIMATION AND LABEL INITIALIZATION (KEEP)
+        #####################################################################################################
+        '''
         # Setting up animation and label
         self.petState = 0
         self.pet = sprite.Animal(0) #This chooses the animal! currently takes 0 for squirrel or 1 for pidgeon
         self.image_label = tk.Label(self)
         self.image_label.place(x=200, y=50)
         self.current_img = None
+        '''
+        #####################################################################################################
+        #NAT'S ANIMATION AND LABEL INITIALIZATION (KEEP)
+        #####################################################################################################
 
         # Start the animation thread
         self.stop_animation = False
@@ -409,10 +433,25 @@ class TomogatchiApp(tk.Tk):
         ##################################################################
         
         self.show_frame("HomeScreen")
+    
 
+    def show_frame(self, frame_name, pet_type=None):
+        frame = self.frames[frame_name]
+        if frame_name == "MainScreen" and pet_type:
+                frame.pet = sprite.Animal({"squirrel": 0, "pigeon": 1}.get(pet_type.lower(), 0))
+        frame.tkraise()
+
+    ###################################
+    #NATS SHOW FRAME LOGIC
+    ##################################
+    '''
     def show_frame(self, frame_name):
         frame = self.frames[frame_name]
         frame.tkraise()
+    '''
+    ###################################
+    #NATS SHOW FRAME LOGIC
+    ##################################
 
     ###################################################################
     #THREADING LOGIC THAT POSSIBLY FIXES ATTRUBUTE ERROR
