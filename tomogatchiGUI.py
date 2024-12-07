@@ -275,7 +275,7 @@ class TomogatchiApp(tk.Tk):
         self.frames["RegisterPage"].grid(row=0, column=0, sticky="nsew")
 
         # Start with HomeScreen
-        self.show_frame("MainScreen")
+        self.show_frame("HomeScreen")
 
     def on_login_success(self, user_data):
         print("Login successful, transitioning to MainScreen")
