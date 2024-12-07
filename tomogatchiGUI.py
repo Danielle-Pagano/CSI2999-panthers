@@ -84,8 +84,6 @@ class MainScreen(tk.Frame):
         self.image_label.place(x=200, y=50)
         self.current_img = None
 
-        threading.Thread(target=lambda: spf.sprite_animation(self)).start()
-
         # Happiness bar
         self.happiness_bar = tb.Progressbar(
             self,
@@ -118,9 +116,6 @@ class MainScreen(tk.Frame):
             mode="determinate"
         )
         self.energy_bar.place(x=325, y=365)
-
-        # Initialize progress bars
-        self.initialize_progress_bars()
 
         # Load button icons
         self.tb_size = (42, 42)
@@ -227,6 +222,11 @@ class MainScreen(tk.Frame):
         # NEW LOGIC FOR CHOOSING PETS WHEN RREGISTERING
         ####################################################
 
+    def mainStart(self):
+        print("Loaded Main")
+        self.initialize_progress_bars()
+        threading.Thread(target=lambda: spf.sprite_animation(self)).start()
+        
 # TomogatchiApp
 class TomogatchiApp(tk.Tk):
     def __init__(self):
@@ -256,12 +256,14 @@ class TomogatchiApp(tk.Tk):
         print("Login successful, transitioning to MainScreen")
         self.user_data = user_data
         self.frames["MainScreen"].update_user_info(user_data)
+        self.frames["MainScreen"].mainStart()
         self.show_frame("MainScreen")
 
     def on_register_success(self, user_data):
         print("Registration successful, transitioning to MainScreen")
         self.user_data = user_data
         self.frames["MainScreen"].update_user_info(user_data)
+        self.frames["MainScreen"].mainStart()
         self.show_frame("MainScreen")
 
     def show_register_page(self):
