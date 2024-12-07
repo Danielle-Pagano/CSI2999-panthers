@@ -11,11 +11,11 @@ def trigger_animation_update(self, state):
     self.is_busy = True
 
     if state == 1:  # Happiness
-        application.add_to_bar(self.happiness_bar, 10)
+        application.add_to_bar(self.happiness_bar, 50)
     elif state == 2:  # Hunger
-        application.add_to_bar(self.hunger_bar, 15)
+        application.add_to_bar(self.hunger_bar, 50)
     elif state == 3:  # Energy
-        application.add_to_bar(self.energy_bar, 20)
+        application.add_to_bar(self.energy_bar, 100)
 
 def home_animation(self, state):
     self.petState = state

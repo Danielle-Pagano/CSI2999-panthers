@@ -11,57 +11,58 @@ class RegisterPage(ttk.Frame):
 
         # Create a custom style for labels with white background and black text
         style = ttk.Style()
-        style.configure("WhiteBgLabel.TLabel", background="white", foreground="black", font=("Arial", 15))
+        style.configure("WhiteBgLabel.TLabel", background="white", foreground="black", font=("Arial", 12))
 
         # Register title
-        ttk.Label(self, text="Register", font=("Arial", 30), bootstyle="inverse").grid(row=0, column=0, columnspan=2, pady=20)
+        ttk.Label(self, text="Register", font=("Arial", 30), style="WhiteBgLabel.TLabel").place(x=250, y=20)
+
 
         # First Name field
-        ttk.Label(self, text="First Name", style="WhiteBgLabel.TLabel").grid(row=1, column=0, padx=5, pady=5)
+        ttk.Label(self, text="First Name", style="WhiteBgLabel.TLabel").place(x=175,y=100)
         self.first_name_entry = ttk.Entry(self, bootstyle="dark")
-        self.first_name_entry.grid(row=1, column=1, pady=10)
+        self.first_name_entry.place(x=175,y=125)
 
         # Last Name field
-        ttk.Label(self, text="Last Name", style="WhiteBgLabel.TLabel").grid(row=2, column=0, padx=5, pady=5)
+        ttk.Label(self, text="Last Name", style="WhiteBgLabel.TLabel").place(x=350,y=100)
         self.last_name_entry = ttk.Entry(self, bootstyle="dark")
-        self.last_name_entry.grid(row=2, column=1, pady=10)
+        self.last_name_entry.place(x=350,y=125)
 
         # Email field
-        ttk.Label(self, text="Email", style="WhiteBgLabel.TLabel").grid(row=3, column=0, padx=5, pady=5)
+        ttk.Label(self, text="Email", style="WhiteBgLabel.TLabel").place(x=100, y=175)
         self.username_entry = ttk.Entry(self, bootstyle="dark")
-        self.username_entry.grid(row=3, column=1, pady=10)
+        self.username_entry.place(x=100, y=200)
 
         # Password field
-        ttk.Label(self, text="Password", style="WhiteBgLabel.TLabel").grid(row=4, column=0, padx=5, pady=5)
+        ttk.Label(self, text="Password", style="WhiteBgLabel.TLabel").place(x=250, y=175)
         self.password_entry = ttk.Entry(self, show="*", bootstyle="dark")
-        self.password_entry.grid(row=4, column=1, pady=10)
+        self.password_entry.place(x=250, y=200)
 
         # Confirm password field
-        ttk.Label(self, text="Confirm Password", style="WhiteBgLabel.TLabel").grid(row=5, column=0, padx=5, pady=5)
+        ttk.Label(self, text="Confirm Password", style="WhiteBgLabel.TLabel").place(x=400, y=175)
         self.confirm_password_entry = ttk.Entry(self, show="*", bootstyle="dark")
-        self.confirm_password_entry.grid(row=5, column=1, pady=10)
+        self.confirm_password_entry.place(x=400, y=200)
 
         # Pet name field
-        ttk.Label(self, text="Pet Name", style="WhiteBgLabel.TLabel").grid(row=6, column=0, padx=5, pady=5)
+        ttk.Label(self, text="Pet Name", style="WhiteBgLabel.TLabel").place(x=175, y=250)
         self.pet_name_entry = ttk.Entry(self, bootstyle="dark")
-        self.pet_name_entry.grid(row=6, column=1, pady=10)
+        self.pet_name_entry.place(x=175, y=275)
 
         # Pet type dropdown
-        ttk.Label(self, text="Pet Type", style="WhiteBgLabel.TLabel").grid(row=7, column=0, padx=5, pady=5)
+        ttk.Label(self, text="Pet Type", style="WhiteBgLabel.TLabel").place(x=350, y=250)
         self.pet_type_var = ttk.StringVar(value="Squirrel")
         ttk.Combobox(
             self,
             textvariable=self.pet_type_var,
             values=["Squirrel", "Pigeon"],
             bootstyle="dark"
-        ).grid(row=7, column=1, pady=10)
+        ).place(x=350, y=275)
 
         # Register button
-        ttk.Button(self, text="Register", bootstyle="primary", command=self.register).grid(row=8, column=0, columnspan=2, pady=20)
+        ttk.Button(self, text="Register", bootstyle="primary", command=self.register).place(x=290,y=325)
 
         # Status label
         self.status_label = ttk.Label(self, text="", font=("Arial", 12), bootstyle="danger")
-        self.status_label.grid(row=9, column=0, columnspan=2)
+        self.status_label.place(x=250,y=375)
 
     def register(self):
         first_name = self.first_name_entry.get()
