@@ -84,8 +84,6 @@ class MainScreen(tk.Frame):
         self.image_label.place(x=275, y=50)
         self.current_img = None
 
-        threading.Thread(target=lambda: spf.sprite_animation(self)).start()
-
         # Happiness bar
         self.happiness_bar = tb.Progressbar(
             self,
@@ -139,9 +137,6 @@ class MainScreen(tk.Frame):
             font=("Helvetica", 12)
         )
         self.happiness_label.place(x=475,y=345)
-
-        # Initialize progress bars
-        self.initialize_progress_bars()
 
         # Load button icons
         self.tb_size = (48, 48)
@@ -272,20 +267,15 @@ class MainScreen(tk.Frame):
             text=f"Welcome,\n{first_name} {last_name}\nPet: {pet_name}"
         )
 
-        ####################################################
-        # NEW LOGIC FOR CHOOSING PETS WHEN RREGISTERING
-        ####################################################
-        # Set pet type dynamically (0 for squirrel, 1 for pigeon)
         pet_type_index = 0 if pet_type == 'squirrel' else 1
         self.pet = sprite.Animal(pet_type_index)
 
-        # Initialize pet animation if needed 
-        ### This breaks the animation ###
-        #if not self.stop_animation:
-            #threading.Thread(target=lambda: spf.sprite_animation(self)).start()
-        ####################################################
-        # NEW LOGIC FOR CHOOSING PETS WHEN RREGISTERING
-        ####################################################
+    # Initializes Bars and animation
+    def mainStart(self):
+        print("Loaded Main")
+        self.initialize_progress_bars()
+        threading.Thread(target=lambda: spf.sprite_animation(self)).start()
+        
 
 # TomogatchiApp
 class TomogatchiApp(tk.Tk):
@@ -320,12 +310,14 @@ class TomogatchiApp(tk.Tk):
         print("Login successful, transitioning to MainScreen")
         self.user_data = user_data
         self.frames["MainScreen"].update_user_info(user_data)
+        self.frames["MainScreen"].mainStart()
         self.show_frame("MainScreen")
 
     def on_register_success(self, user_data):
         print("Registration successful, transitioning to MainScreen")
         self.user_data = user_data
         self.frames["MainScreen"].update_user_info(user_data)
+        self.frames["MainScreen"].mainStart()
         self.show_frame("MainScreen")
 
     def show_register_page(self):
