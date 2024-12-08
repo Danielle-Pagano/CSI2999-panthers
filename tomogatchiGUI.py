@@ -308,13 +308,13 @@ class TomogatchiApp(tk.Tk):
             frame.grid(row=0, column=0, sticky="nsew")
 
         # Add LoginPage and RegisterPage
-        self.frames["LoginPage"] = LoginPage(self, self.on_login_success, self.show_register_page)
-        self.frames["RegisterPage"] = RegisterPage(self, self.on_register_success)
+        self.frames["LoginPage"] = LoginPage(self, self.on_login_success, self.show_register_page, self)
+        self.frames["RegisterPage"] = RegisterPage(self, self.on_register_success, self)
         self.frames["LoginPage"].grid(row=0, column=0, sticky="nsew")
         self.frames["RegisterPage"].grid(row=0, column=0, sticky="nsew")
 
         # Start with HomeScreen
-        self.show_frame("HomeScreen")
+        self.show_frame("HomePage")
 
     def on_login_success(self, user_data):
         print("Login successful, transitioning to MainScreen")
