@@ -2,10 +2,22 @@ import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
 from shared_firebase import db  # Shared Firebase database object
 
+from PIL import Image, ImageTk
+import os
+
+def display_image(filename, size=None):
+    current_dir = os.path.dirname(__file__)
+    image_path = os.path.join(current_dir, "images", filename)
+    image = Image.open(image_path)
+    if size:
+        image = image.resize(size, Image.Resampling.LANCZOS)
+    return ImageTk.PhotoImage(image)
+
 class RegisterPage(ttk.Frame):
-    def __init__(self, parent, on_register_success):
+    def __init__(self, parent, on_register_success, controller):
         super().__init__(parent)
         self.on_register_success = on_register_success
+        self.controller = controller
 
         self.configure(style="TFrame")  # Use default style
 
@@ -59,6 +71,11 @@ class RegisterPage(ttk.Frame):
 
         # Register button
         ttk.Button(self, text="Register", bootstyle="primary", command=self.register).place(x=290,y=325)
+
+        self.tb_size = (32, 32)
+        self.home_icon = display_image("button_icons/home_icon.png", size=self.tb_size)
+        
+        ttk.Button(self,image=self.home_icon, bootstyle='secondary', command=lambda: self.controller.show_frame("HomeScreen")).place(x=15,y=365)
 
         # Status label
         self.status_label = ttk.Label(self, text="", font=("Arial", 12), bootstyle="danger")

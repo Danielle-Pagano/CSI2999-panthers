@@ -80,6 +80,11 @@ class MainScreen(tk.Frame):
         self.stop_animation = False  # Control flag for sprite animation
         self.is_busy = False  # Flag to indicate whether the pet is busy
 
+        main_background = display_image("backgroundFrameMockup.jpg")
+        main_background_label = tk.Label(self, image=main_background)
+        main_background_label.image = main_background
+        main_background_label.place(relx=0, rely=0,height=200, width=650)
+
         self.image_label = tk.Label(self)
         self.image_label.place(x=275, y=50)
         self.current_img = None
@@ -223,7 +228,7 @@ class MainScreen(tk.Frame):
             food_frame,
             image=self.acorn_image,
             cursor='hand2',
-            style="FoodButton.TButton", 
+            style="FoodButton.TButton",
             command=lambda:self.feed_pet(food_frame)
             ).place(x=25,y=25)
         ttk.Button(
@@ -298,8 +303,8 @@ class TomogatchiApp(tk.Tk):
             frame.grid(row=0, column=0, sticky="nsew")
 
         # Add LoginPage and RegisterPage
-        self.frames["LoginPage"] = LoginPage(self, self.on_login_success, self.show_register_page)
-        self.frames["RegisterPage"] = RegisterPage(self, self.on_register_success)
+        self.frames["LoginPage"] = LoginPage(self, self.on_login_success, self.show_register_page, self)
+        self.frames["RegisterPage"] = RegisterPage(self, self.on_register_success, self)
         self.frames["LoginPage"].grid(row=0, column=0, sticky="nsew")
         self.frames["RegisterPage"].grid(row=0, column=0, sticky="nsew")
 
