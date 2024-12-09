@@ -1,8 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
-from tkinter.font import Font
 import ttkbootstrap as tb
-from PIL import Image, ImageTk
+from PIL import Image, ImageTk, ImageDraw, ImageFont
 import os
 
 import spriteFunctions as spf
@@ -26,12 +25,26 @@ def display_image(filename, size=None):
         image = image.resize(size, Image.Resampling.LANCZOS)
     return ImageTk.PhotoImage(image)
 
-def import_custom_font(filename, font_size):
+def import_custom_font(filename, font_size, text, text_color,bg_color):
     current_dir = os.path.dirname(__file__)
     font_path = os.path.join(current_dir, "fonts", filename)
     if not os.path.isfile(font_path):
         raise FileNotFoundError(f"Font file not found: {font_path}")
-    return Font(family="SemiBold.ttf", size=font_size)
+
+    font = ImageFont.truetype(font_path, font_size)
+    temp_image = Image.new("RGBA", (1,1), "#655560")
+    draw = ImageDraw.Draw(temp_image)
+    text_bbox = draw.textbbox((0,0), text, font=font)
+    text_width = text_bbox[2] - text_bbox[0] + 10
+    text_height = text_bbox[3] - text_bbox[1] + 10
+
+    image = Image.new("RGBA", (text_width, text_height), "#655560")
+    draw = ImageDraw.Draw(image)
+    
+    # Draw the text
+    draw.text((5,5), text, font=font, fill=text_color)
+    return ImageTk.PhotoImage(image)
+
 
 # HomeScreen frame
 class HomeScreen(tk.Frame):
@@ -41,19 +54,18 @@ class HomeScreen(tk.Frame):
         self.grid(row=0, column=0, sticky='nsew')
 
         # Background on home screen
-        background_image = display_image("backgroundPic.jpg")
+        self.background_size = (650,425)
+        background_image = display_image("main_background.jpg", self.background_size)
         background_label = tk.Label(self, image=background_image)
         background_label.image = background_image
-        background_label.place(relx=0, rely=0, relwidth=1, relheight=1)
+        background_label.place(x=0, y=0, relwidth=1, relheight=1)
 
-        semibold_font = import_custom_font("SemiBold.ttf", 30)
-        title_label = tb.Label(self, text="Tomogatchi", anchor="n", font=semibold_font)
-        title_label.pack(padx=10, pady=10)
+        semibold_font = import_custom_font("SemiBold.ttf", 20, "Tomogatchi", "black", "#655560")
+        title_label = tk.Label(self, image=semibold_font, bg='black')
+        title_label.image = semibold_font
+        title_label.pack(side="top", anchor="n", pady=0)
         
-        # # Separator
-        # home_separator = ttk.Separator(self, orient='horizontal')
-        # home_separator.pack(fill='x')
-        
+        # login_font = import_custom_font("SemiBold.ttf", 36, "Tomogatchi", "black", "white", )
         # Login Button
         login_button = tb.Button(
             self, text="Login", bootstyle='success',
@@ -213,6 +225,7 @@ class MainScreen(tk.Frame):
         food_frame = tk.Toplevel(self)
         food_frame.title("Choose Food")
         food_frame.geometry(f"200x100+{self.winfo_x() + x_position}+{self.winfo_y() + y_position}")
+
         food_frame.transient(self)  # Make the pop-up stay on top of the parent window
         food_frame.grab_set()
         
