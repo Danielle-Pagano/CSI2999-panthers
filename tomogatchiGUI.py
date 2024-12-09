@@ -6,7 +6,15 @@ from PIL import Image, ImageTk, ImageDraw, ImageFont
 
 from tkinter.font import Font
 import ttkbootstrap as tb
+
+from PIL import Image, ImageTk, ImageFont
+import os as os
+import threading
+from register import RegisterPage
+from login import LoginPage
+
 from PIL import Image, ImageTk
+
 
 import os
 
@@ -69,7 +77,45 @@ class HomeScreen(tk.Frame):
         background_image = display_image("main_background.jpg", self.background_size)
         background_label = tk.Label(self, image=background_image)
         background_label.image = background_image
+
+        background_label.pack(fill="both", expand=True)
+        
+        #separates title screen from rest of frame
+        home_separator = ttk.Separator(self, orient='horizontal')
+        home_separator.pack(fill='x')
+        
+        login_button = tb.Button(self, text="LOGIN", bootstyle='success',
+                                 command=lambda: controller.show_frame("LoginPage"), cursor='hand2')
+        login_button.place(relx=0.4, rely=0.5, anchor='center')
+        
+        register_button = tb.Button(self, text="REGISTER", bootstyle='info',
+                                  command=lambda: controller.show_frame("RegisterPage"), cursor='hand2')
+        register_button.place(relx=0.6, rely=0.5, anchor='center')
+
+#signup screen frame
+class SignUpScreen(tk.Frame):
+    def __init__(self, parent, controller):
+        super().__init__(parent)
+        self.controller = controller
+        self.place(relwidth=1, relheight=1) 
+        
+        signup_info_frame = tk.LabelFrame(self, text="User Information")
+        signup_info_frame.place(x=20,y=20, relwidth=.9, height=150)
+
+        tk.Label(signup_info_frame, text="First Name").place(x=50,y=10)
+        self.first_name_entry = tk.Entry(signup_info_frame)
+        self.first_name_entry.place(x=20, y=35)
+        
+        tk.Label(signup_info_frame, text="Last Name").place(x=210,y=10)
+        self.last_name_entry = tk.Entry(signup_info_frame)
+        self.last_name_entry.place(x=180, y=35)
+        
+        tk.Label(signup_info_frame, text="Email").place(x=385,y=10)
+        self.email_entry = tk.Entry(signup_info_frame)
+        self.email_entry.place(x=340,y=35)
+
         background_label.place(x=0, y=0, relwidth=1, relheight=1)
+
 
         semibold_font = import_custom_font("SemiBold.ttf", 20, "Tomogatchi", "black", "#655560")
         title_label = tk.Label(self, image=semibold_font, bg='black')
@@ -159,6 +205,69 @@ class MainScreen(tk.Frame):
         )
         self.hunger_bar.place(x=475, y=320)
 
+
+class MainScreen(tk.Frame):
+    def __init__(self, parent, controller,pet_type="squirrel"): #passed default value of squirrel
+        super().__init__(parent)
+        self.controller = controller
+        self.place(relwidth=1, relheight=1) 
+
+        ######################################################
+        # Map pet types to indices
+        ######################################################
+        pet_type_mapping = {"squirrel": 0, "pigeon": 1}
+        pet_index = pet_type_mapping.get(pet_type.lower(), 0)
+        ######################################################
+        # Map pet types to indices
+        ######################################################
+
+        # Setting up animation and label
+        self.petState = 0
+        self.pet = sprite.Animal(pet_index)  # Use pet_index based on chosen pet
+        self.image_label = tk.Label(self)
+        self.image_label.place(x=200, y=50)
+        self.current_img = None
+
+        #####################################################################################################
+        #NAT'S ANIMATION AND LABEL INITIALIZATION (KEEP)
+        #####################################################################################################
+        '''
+        # Setting up animation and label
+        self.petState = 0
+        self.pet = sprite.Animal(0) #This chooses the animal! currently takes 0 for squirrel or 1 for pidgeon
+        self.image_label = tk.Label(self)
+        self.image_label.place(x=200, y=50)
+        self.current_img = None
+        '''
+        #####################################################################################################
+        #NAT'S ANIMATION AND LABEL INITIALIZATION (KEEP)
+        #####################################################################################################
+
+        # Start the animation thread
+        self.stop_animation = False
+        self.is_busy = False
+
+        ###################################################################
+        #NAT'S THREADING LOGIC (KEEP)
+        ###################################################################
+        #threading.Thread(target=lambda: spf.sprite_animation(self)).start()
+        ###################################################################
+        #NAT'S THREADING LOGIC 
+        ###################################################################
+
+        ###################################################################
+        #THREADING LOGIC THAT POSSIBLY FIXES ATTRUBUTE ERROR
+        ###################################################################
+        self.animation_thread = threading.Thread(target=lambda: spf.sprite_animation(self), daemon=True)
+        self.after(100, self.animation_thread.start)
+        ###################################################################
+        #THREADING LOGIC THAT POSSIBLY FIXES ATTRUBUTE ERROR
+        ###################################################################
+
+
+
+
+
         self.happiness_label = tk.Label(
             self,
             text="Hunger",
@@ -186,6 +295,7 @@ class MainScreen(tk.Frame):
 
         # Initialize progress bars
         self.initialize_progress_bars()
+
 
         # Load button icons
         self.tb_size = (48, 48)
@@ -340,6 +450,39 @@ class TomogatchiApp(tk.Tk):
         super().__init__()
         self.title("Tomogatchi")
         self.resizable(False, False)
+
+
+        ##################################################################
+        #LOGIC TO HANDLE LOGIN FORM
+        ##################################################################
+        # Function to handle successful LOGIN
+        def handle_login_success(data):
+            print("Login successful:", data)  # Replace with desired functionality
+        ##################################################################
+        #LOGIC TO HANDLE LOGIN FORM
+        ################################################################## 
+
+        ##################################################################
+        #LOGIC TO HANDLE LOGIN FORM
+        ##################################################################
+        # Function to show the RegisterPage from LoginPage
+        def show_register_page():
+            self.show_frame("RegisterPage")
+        ##################################################################
+        #LOGIC TO HANDLE LOGIN FORM
+        ##################################################################  
+ 
+
+        ##################################################################
+        #LOGIC TO HANDLE REGISTER FORM
+        ##################################################################
+        # Function to handle successful registration
+        def handle_register_success(data):
+            print("Registration successful:", data)  # Replace with desired functionality
+        ##################################################################
+        #LOGIC TO HANDLE REGISTER FORM
+        ##################################################################    
+
         self.geometry("650x425")
 
         self.rowconfigure(0, weight=1)
@@ -354,6 +497,32 @@ class TomogatchiApp(tk.Tk):
             self.frames[FrameClass.__name__] = frame
             frame.grid(row=0, column=0, sticky="nsew")
 
+
+        ##################################################################
+        #LOGIC TO HANDLE REGISTER FORM
+        ##################################################################
+        # Add RegisterPage separately with its required argument
+        register_frame = RegisterPage(self, self, handle_register_success)
+        register_frame.controller = self  # Explicitly set the controller attribute
+        self.frames["RegisterPage"] = register_frame
+        register_frame.grid(row=0, column=0, sticky="nsew")
+        ##################################################################
+        #LOGIC  TO HANDLE REGISTER FORM
+        ##################################################################
+
+        ##################################################################
+        #LOGIC TO HANDLE REGISTER FORM
+        ##################################################################
+        # Add RegisterPage separately with its required argument
+        login_frame = LoginPage(self, handle_login_success, self, show_register_page)
+        self.frames["LoginPage"] = login_frame
+        login_frame.controller = self
+        login_frame.grid(row=0, column=0, sticky="nsew")
+        ##################################################################
+        #LOGIC  TO HANDLE REGISTER FORM
+        ##################################################################
+        
+
         # Add LoginPage and RegisterPage
 
         self.frames["LoginPage"] = LoginPage(self, self.on_login_success, self.show_register_page, self)
@@ -365,7 +534,21 @@ class TomogatchiApp(tk.Tk):
         self.frames["RegisterPage"].grid(row=0, column=0, sticky="nsew")
 
         # Start with HomeScreen
+
         self.show_frame("HomeScreen")
+    
+
+
+    def show_frame(self, frame_name, pet_type=None):
+        frame = self.frames[frame_name]
+        if frame_name == "MainScreen" and pet_type:
+                frame.pet = sprite.Animal({"squirrel": 0, "pigeon": 1}.get(pet_type.lower(), 0))
+        frame.tkraise()
+
+    ###################################
+    #NATS SHOW FRAME LOGIC
+    ##################################
+    '''
 
     def on_login_success(self, user_data):
         print("Login successful, transitioning to MainScreen")
@@ -386,6 +569,23 @@ class TomogatchiApp(tk.Tk):
     def show_frame(self, frame_name):
         frame = self.frames[frame_name]
         frame.tkraise()
+    '''
+    ###################################
+    #NATS SHOW FRAME LOGIC
+    ##################################
+
+    ###################################################################
+    #THREADING LOGIC THAT POSSIBLY FIXES ATTRUBUTE ERROR
+    ###################################################################
+    def destroy(self):
+        # Notify MainScreen to stop the animation
+        if "MainScreen" in self.frames:
+            self.frames["MainScreen"].stop_animation = True
+        super().destroy() 
+    ###################################################################
+    #THREADING LOGIC THAT POSSIBLY FIXES ATTRUBUTE ERROR
+    ###################################################################
+
 
 if __name__ == "__main__":
     app = TomogatchiApp()
