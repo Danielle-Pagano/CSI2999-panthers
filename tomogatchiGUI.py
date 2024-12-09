@@ -1,8 +1,13 @@
 import tkinter as tk
 from tkinter import ttk
+
+import ttkbootstrap as tb
+from PIL import Image, ImageTk, ImageDraw, ImageFont
+
 from tkinter.font import Font
 import ttkbootstrap as tb
 from PIL import Image, ImageTk
+
 import os
 
 import spriteFunctions as spf
@@ -26,11 +31,29 @@ def display_image(filename, size=None):
         image = image.resize(size, Image.Resampling.LANCZOS)
     return ImageTk.PhotoImage(image)
 
-def import_custom_font(filename, font_size):
+def import_custom_font(filename, font_size, text, text_color,bg_color):
     current_dir = os.path.dirname(__file__)
     font_path = os.path.join(current_dir, "fonts", filename)
     if not os.path.isfile(font_path):
         raise FileNotFoundError(f"Font file not found: {font_path}")
+
+
+    font = ImageFont.truetype(font_path, font_size)
+    temp_image = Image.new("RGBA", (1,1), "#655560")
+    draw = ImageDraw.Draw(temp_image)
+    text_bbox = draw.textbbox((0,0), text, font=font)
+    text_width = text_bbox[2] - text_bbox[0] + 10
+    text_height = text_bbox[3] - text_bbox[1] + 10
+
+    image = Image.new("RGBA", (text_width, text_height), "#655560")
+    draw = ImageDraw.Draw(image)
+    
+    # Draw the text
+    draw.text((5,5), text, font=font, fill=text_color)
+    return ImageTk.PhotoImage(image)
+
+
+
     return Font(family="SemiBold.ttf", size=font_size)
 
 # HomeScreen frame
@@ -41,6 +64,20 @@ class HomeScreen(tk.Frame):
         self.grid(row=0, column=0, sticky='nsew')
 
         # Background on home screen
+
+        self.background_size = (650,425)
+        background_image = display_image("main_background.jpg", self.background_size)
+        background_label = tk.Label(self, image=background_image)
+        background_label.image = background_image
+        background_label.place(x=0, y=0, relwidth=1, relheight=1)
+
+        semibold_font = import_custom_font("SemiBold.ttf", 20, "Tomogatchi", "black", "#655560")
+        title_label = tk.Label(self, image=semibold_font, bg='black')
+        title_label.image = semibold_font
+        title_label.pack(side="top", anchor="n", pady=0)
+        
+        # login_font = import_custom_font("SemiBold.ttf", 36, "Tomogatchi", "black", "white", )
+
         background_image = display_image("backgroundPic.jpg")
         background_label = tk.Label(self, image=background_image)
         background_label.image = background_image
@@ -54,6 +91,7 @@ class HomeScreen(tk.Frame):
         # home_separator = ttk.Separator(self, orient='horizontal')
         # home_separator.pack(fill='x')
         
+
         # Login Button
         login_button = tb.Button(
             self, text="Login", bootstyle='success',
@@ -79,6 +117,12 @@ class MainScreen(tk.Frame):
         self.pet = sprite.Animal(0)  # Will be initialized later in update_user_info
         self.stop_animation = False  # Control flag for sprite animation
         self.is_busy = False  # Flag to indicate whether the pet is busy
+
+
+        main_background = display_image("backgroundFrameMockup.jpg")
+        main_background_label = tk.Label(self, image=main_background)
+        main_background_label.image = main_background
+        main_background_label.place(relx=0, rely=0,height=200, width=650)
 
         self.image_label = tk.Label(self)
         self.image_label.place(x=275, y=50)
@@ -167,7 +211,7 @@ class MainScreen(tk.Frame):
             self,
             image=self.eat_icon,
             bootstyle="success",
-            command=lambda: spf.trigger_animation_update(self, 2),
+            command=lambda:self.food_popup(50,200),
             cursor='hand2'
         ).place(x=110, y=258)
 
@@ -203,6 +247,48 @@ class MainScreen(tk.Frame):
             pady=10
         )
         self.user_label.place(x=200, y=275, width=250, height=75)
+
+
+    def food_popup(self,x_position, y_position):
+        food_frame = tk.Toplevel(self)
+        food_frame.title("Choose Food")
+        food_frame.geometry(f"200x100+{self.winfo_x() + x_position}+{self.winfo_y() + y_position}")
+
+        food_frame.transient(self)  # Make the pop-up stay on top of the parent window
+        food_frame.grab_set()
+        
+        self.food_size = (40,40)
+        self.acorn_image = display_image("food_items/acorn.png", size=self.food_size)
+        self.seed_image = display_image("food_items/seeds.png", size=self.food_size)
+
+        style = ttk.Style()
+        style.configure(
+        "FoodButton.TButton", 
+        borderwidth=0,  # Remove border
+        background="white",  # Match background
+        padding=0  # Remove padding around the image
+        )
+
+        
+        ttk.Button(
+            food_frame,
+            image=self.acorn_image,
+            cursor='hand2',
+            style="FoodButton.TButton",
+            command=lambda:self.feed_pet(food_frame)
+            ).place(x=25,y=25)
+        ttk.Button(
+            food_frame, 
+            image=self.seed_image, 
+            cursor='hand2',
+            style="FoodButton.TButton",
+            command=lambda:self.feed_pet(food_frame)
+            ).place(x=110,y=25)
+
+    def feed_pet(self, popup):
+        popup.destroy()
+        spf.trigger_animation_update(self, 2)
+
 
     def playGame(self):
         spf.trigger_animation_update(self, 1)
@@ -269,6 +355,10 @@ class TomogatchiApp(tk.Tk):
             frame.grid(row=0, column=0, sticky="nsew")
 
         # Add LoginPage and RegisterPage
+
+        self.frames["LoginPage"] = LoginPage(self, self.on_login_success, self.show_register_page, self)
+        self.frames["RegisterPage"] = RegisterPage(self, self.on_register_success, self)
+
         self.frames["LoginPage"] = LoginPage(self, self.on_login_success, self.show_register_page)
         self.frames["RegisterPage"] = RegisterPage(self, self.on_register_success)
         self.frames["LoginPage"].grid(row=0, column=0, sticky="nsew")
