@@ -19,6 +19,7 @@ class RegisterPage(ttk.Frame):
         self.on_register_success = on_register_success
         self.controller = controller
 
+
         self.configure(style="TFrame")  # Use default style
 
         # Create a custom style for labels with white background and black text
@@ -71,6 +72,7 @@ class RegisterPage(ttk.Frame):
 
         # Register button
         ttk.Button(self, text="Register", bootstyle="primary", command=self.register).place(x=290,y=325)
+
 
         self.tb_size = (32, 32)
         self.home_icon = display_image("button_icons/home_icon.png", size=self.tb_size)

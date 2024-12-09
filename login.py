@@ -1,6 +1,7 @@
 import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
 from shared_firebase import db  # Shared Firebase database object
+
 from register import display_image
 
 from PIL import Image, ImageTk
@@ -13,6 +14,13 @@ class LoginPage(ttk.Frame):
         self.on_login_success = on_login_success
         self.show_register_page = show_register_page
         self.controller = controller
+
+
+class LoginPage(ttk.Frame):
+    def __init__(self, parent, on_login_success, show_register_page):
+        super().__init__(parent)
+        self.on_login_success = on_login_success
+        self.show_register_page = show_register_page
 
         self.configure(style="TFrame")  # Use default style
 
@@ -37,11 +45,11 @@ class LoginPage(ttk.Frame):
         ttk.Button(self, text="Login", bootstyle="primary", command=self.login).place(x=265,y=275)
         ttk.Button(self, text="Register", bootstyle="secondary", command=self.show_register_page).place(x=340,y=275)
 
+
         self.tb_size = (32, 32)
         self.home_icon = display_image("button_icons/home_icon.png", size=self.tb_size)
          
         ttk.Button(self,image=self.home_icon, bootstyle='secondary', command=lambda: self.controller.show_frame("HomeScreen")).place(x=15,y=365)
-
 
         # Status label
         self.login_status_label = ttk.Label(self, text="", font=("Arial", 12), bootstyle="danger")
