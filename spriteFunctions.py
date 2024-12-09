@@ -4,24 +4,42 @@ from Sprite_Stuff import SpriteSheetFramework as sprite
 import time
 from PIL import ImageTk
 
+revived = False
+
 def trigger_animation_update(self, state):
     self.petState = state
     self.is_busy = True
 
     if state == 1:  # Happiness
-        application.add_to_bar(self.happiness_bar, 10)
+        application.add_to_bar(self.happiness_bar, 50)
     elif state == 2:  # Hunger
-        application.add_to_bar(self.hunger_bar, 15)
+        application.add_to_bar(self.hunger_bar, 50)
     elif state == 3:  # Energy
-        application.add_to_bar(self.energy_bar, 20)
+        application.add_to_bar(self.energy_bar, 100)
+
+def home_animation(self, state):
+    self.petState = state
+    self.is_busy = True
 
 def sprite_animation(self):
+    global revived
     # Run this in a loop to handle animation
     while not self.stop_animation:
+        #faint check first
+        faint = application.faintCheck()
+        if faint == True:
+            play_activity_animation(self)
+
         if self.is_busy:
             play_activity_animation(self)
             self.is_busy = False
-            self.petState = 0  # Return to idle state
+            if revived == False:
+                self.petState = 0  # Return to idle state
+            else:
+                # Waves when revived
+                revived = False
+                self.petState = 1
+                play_activity_animation(self)
         else:
             play_idle_animation(self)
 
@@ -44,7 +62,16 @@ def play_idle_animation(self):
         randomIdle(self) 
 
 def play_activity_animation(self):
-    i = self.petState
+    # If the pet is fainted, this will force it into the "fainted" state
+    global revived
+    faint = application.faintCheck()
+    if faint == False:
+        i = self.petState
+    else:
+        revived = True
+        self.petState = 7
+        i = 7
+
     for frame_index in range(len(self.pet.frame[self.petState])):  # Loop through activity frames
         # Prevents the animation from crashing upon changing the activity 
         if i != self.petState:
@@ -53,7 +80,7 @@ def play_activity_animation(self):
         update_sprite(self, self.petState, frame_index)
         time.sleep(0.2)  # Control frame rate
     
-    #Keeps the sprite playing (durring sleep or death)
+    #Keeps the sprite playing For when it faints
     while self.petState == 7:
         play_activity_animation(self)
 
