@@ -5,6 +5,7 @@ import time
 from PIL import ImageTk
 
 revived = False
+stopThread = False
 
 def trigger_animation_update(self, state):
     self.petState = state
@@ -22,10 +23,14 @@ def home_animation(self, state):
     self.is_busy = True
 
 def sprite_animation(self):
-    global revived
+    global revived, stopThread
     # Run this in a loop to handle animation
     while not self.stop_animation:
-        #faint check first
+        if stopThread == True:
+            #This is for when the user goes back home
+            print("ThreadStopped")
+            break
+        #faint check
         faint = application.faintCheck()
         if faint == True:
             play_activity_animation(self)
@@ -92,3 +97,11 @@ def update_sprite(self, y, frame_index):
 
 def stop_animation(self):
     self.stop_animation = True
+
+def stop_Thread():
+    global stopThread
+    stopThread = True
+
+def start_Thread():
+    global stopThread
+    stopThread = False
