@@ -39,7 +39,7 @@ def add_to_bar(bar, increase):
         active_updates.pop(bar_id, None)
     
     #Updates the bar and start a new countdown
-    new_value = min(bar["value"] + increase, 100)
+    new_value = min(bar["value"] + increase, 21600)
     bar["value"] = new_value
     update_bar(bar, new_value)
 

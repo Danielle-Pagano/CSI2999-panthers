@@ -1,7 +1,8 @@
 import tkinter as tk
 from tkinter import ttk
+from tkinter.font import Font
 import ttkbootstrap as tb
-from PIL import Image, ImageTk, ImageDraw, ImageFont
+from PIL import Image, ImageTk
 import os
 
 import spriteFunctions as spf
@@ -25,26 +26,12 @@ def display_image(filename, size=None):
         image = image.resize(size, Image.Resampling.LANCZOS)
     return ImageTk.PhotoImage(image)
 
-def import_custom_font(filename, font_size, text, text_color,bg_color):
+def import_custom_font(filename, font_size):
     current_dir = os.path.dirname(__file__)
     font_path = os.path.join(current_dir, "fonts", filename)
     if not os.path.isfile(font_path):
         raise FileNotFoundError(f"Font file not found: {font_path}")
-
-    font = ImageFont.truetype(font_path, font_size)
-    temp_image = Image.new("RGBA", (1,1), "#655560")
-    draw = ImageDraw.Draw(temp_image)
-    text_bbox = draw.textbbox((0,0), text, font=font)
-    text_width = text_bbox[2] - text_bbox[0] + 10
-    text_height = text_bbox[3] - text_bbox[1] + 10
-
-    image = Image.new("RGBA", (text_width, text_height), "#655560")
-    draw = ImageDraw.Draw(image)
-    
-    # Draw the text
-    draw.text((5,5), text, font=font, fill=text_color)
-    return ImageTk.PhotoImage(image)
-
+    return Font(family="SemiBold.ttf", size=font_size)
 
 # HomeScreen frame
 class HomeScreen(tk.Frame):
@@ -54,18 +41,19 @@ class HomeScreen(tk.Frame):
         self.grid(row=0, column=0, sticky='nsew')
 
         # Background on home screen
-        self.background_size = (650,425)
-        background_image = display_image("main_background.jpg", self.background_size)
+        background_image = display_image("backgroundPic.jpg")
         background_label = tk.Label(self, image=background_image)
         background_label.image = background_image
-        background_label.place(x=0, y=0, relwidth=1, relheight=1)
+        background_label.place(relx=0, rely=0, relwidth=1, relheight=1)
 
-        semibold_font = import_custom_font("SemiBold.ttf", 20, "Tomogatchi", "#FFFFFF", "#655560")
-        title_label = tk.Label(self, image=semibold_font, bg='black')
-        title_label.image = semibold_font
-        title_label.pack(side="top", anchor="n", pady=0)
+        semibold_font = import_custom_font("SemiBold.ttf", 30)
+        title_label = tb.Label(self, text="Tomogatchi", anchor="n", font=semibold_font)
+        title_label.pack(padx=10, pady=10)
         
-        # login_font = import_custom_font("SemiBold.ttf", 36, "Tomogatchi", "black", "white", )
+        # # Separator
+        # home_separator = ttk.Separator(self, orient='horizontal')
+        # home_separator.pack(fill='x')
+        
         # Login Button
         login_button = tb.Button(
             self, text="Login", bootstyle='success',
@@ -101,7 +89,7 @@ class MainScreen(tk.Frame):
         self.image_label.place(x=275, y=50)
         self.current_img = None
 
-        self.history = 0
+        threading.Thread(target=lambda: spf.sprite_animation(self)).start()
 
         # Happiness bar
         self.happiness_bar = tb.Progressbar(
@@ -156,6 +144,9 @@ class MainScreen(tk.Frame):
             font=("Helvetica", 12)
         )
         self.happiness_label.place(x=475,y=345)
+
+        # Initialize progress bars
+        self.initialize_progress_bars()
 
         # Load button icons
         self.tb_size = (48, 48)
@@ -222,7 +213,6 @@ class MainScreen(tk.Frame):
         food_frame = tk.Toplevel(self)
         food_frame.title("Choose Food")
         food_frame.geometry(f"200x100+{self.winfo_x() + x_position}+{self.winfo_y() + y_position}")
-
         food_frame.transient(self)  # Make the pop-up stay on top of the parent window
         food_frame.grab_set()
         
@@ -265,15 +255,14 @@ class MainScreen(tk.Frame):
     def homeButton(self):
         def home():
             time.sleep(3)
-            spf.stop_Thread()
             self.controller.show_frame("HomeScreen")
         spf.home_animation(self, 1)
         threading.Thread(target=home).start()
 
     def initialize_progress_bars(self):
-        application.update_bar(self.happiness_bar, 100)
-        application.update_bar(self.hunger_bar, 100)
-        application.update_bar(self.energy_bar, 100)
+        application.update_bar(self.happiness_bar, 7200)
+        application.update_bar(self.hunger_bar, 7200)
+        application.update_bar(self.energy_bar, 21600)
 
     def update_user_info(self, user_data):
         # Extract user information
@@ -287,18 +276,21 @@ class MainScreen(tk.Frame):
         self.user_label.config(
             text=f"Welcome,\n{first_name} {last_name}\nPet: {pet_name}"
         )
+
+        ####################################################
+        # NEW LOGIC FOR CHOOSING PETS WHEN RREGISTERING
+        ####################################################
+        # Set pet type dynamically (0 for squirrel, 1 for pigeon)
         pet_type_index = 0 if pet_type == 'squirrel' else 1
         self.pet = sprite.Animal(pet_type_index)
 
-    def startMain(self):
-        if self.history == 0:
-            self.initialize_progress_bars()
-        self.history = 1
-        application.add_to_bar(self.happiness_bar, 100)
-        application.add_to_bar(self.hunger_bar, 100)
-        application.add_to_bar(self.energy_bar, 100)
-        spf.start_Thread()
-        threading.Thread(target=lambda: spf.sprite_animation(self)).start()
+        # Initialize pet animation if needed 
+        ### This breaks the animation ###
+        #if not self.stop_animation:
+            #threading.Thread(target=lambda: spf.sprite_animation(self)).start()
+        ####################################################
+        # NEW LOGIC FOR CHOOSING PETS WHEN RREGISTERING
+        ####################################################
 
 # TomogatchiApp
 class TomogatchiApp(tk.Tk):
@@ -333,31 +325,21 @@ class TomogatchiApp(tk.Tk):
         print("Login successful, transitioning to MainScreen")
         self.user_data = user_data
         self.frames["MainScreen"].update_user_info(user_data)
-        self.frames["MainScreen"].startMain()
         self.show_frame("MainScreen")
 
     def on_register_success(self, user_data):
         print("Registration successful, transitioning to MainScreen")
         self.user_data = user_data
         self.frames["MainScreen"].update_user_info(user_data)
-        self.frames["MainScreen"].startMain()
         self.show_frame("MainScreen")
 
     def show_register_page(self):
         print("Navigating to RegisterPage")
         self.show_frame("RegisterPage")
 
-    def show_frame(self, frame_name, pet_type=None):
+    def show_frame(self, frame_name):
         frame = self.frames[frame_name]
-        if frame_name == "MainScreen" and pet_type:
-                frame.pet = sprite.Animal({"squirrel": 0, "pigeon": 1}.get(pet_type.lower(), 0))
         frame.tkraise()
-
-    def destroy(self):
-        # Notify MainScreen to stop the animation
-        if "MainScreen" in self.frames:
-            self.frames["MainScreen"].stop_animation = True
-        super().destroy() 
 
 if __name__ == "__main__":
     app = TomogatchiApp()
