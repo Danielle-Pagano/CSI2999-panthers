@@ -19,19 +19,19 @@
 
 \*Note this application is only Windows accessible a Mac version may be included in a later release\*
 
-1. Step-by-step guide on how to download the app  
-   2. To begin, download the zip file from this repository: [https://github.com/Danielle-Pagano/CSI2999-panthers](https://github.com/Danielle-Pagano/CSI2999-panthers)  
-   3. To download the zip file, click on the green code button and navigate to “download zip”  
-   4. Go to your downloads folder and find the zip file named “CSI2999-panthers.zip”  
-   5. Extract the zip file to your desired location  
-   6. Within the folder, Run “TomogatchiAPP.exe”  
-   7. If this window appears:
+ Step-by-step guide on how to download the app  
+   1. To begin, download the zip file from this repository: [https://github.com/Danielle-Pagano/CSI2999-panthers](https://github.com/Danielle-Pagano/CSI2999-panthers)  
+   2. To download the zip file, click on the green code button and navigate to “download zip”  
+   3. Go to your downloads folder and find the zip file named “CSI2999-panthers.zip”  
+   4. Extract the zip file to your desired location  
+   5. Within the folder, Run “TomogatchiAPP.exe”  
+   6. If this window appears:
       ![](Warning.PNG)
 
-   8. Click “More Info” and select “Run anyway”  
-   9. Tomogatchi’s main screen should appear:  
-   10. ![](HomeScreen.PNG)  
-   11. Congratulations you successfully downloaded the game.
+   7. Click “More Info” and select “Run anyway”  
+   8. Tomogatchi’s main screen should appear:  
+   9. ![](HomeScreen.PNG)  
+   10. Congratulations you successfully downloaded the game.
 For easy game access, Users can pin the “TomogatchiAPP” application to the taskbar or send it to the desktop.
 
 **Registration Instructions**
