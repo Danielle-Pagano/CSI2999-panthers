@@ -27,11 +27,11 @@
    6. Within the folder, Run “TomogatchiAPP.exe”  
    7. If this window appears:
 
-       ![][HomeScreen2.JPG]
+       ![](HomeScreen2.JPG)
    8. 
    9. Click “More Info” and select “Run anyway”  
    10. Tomogatchi’s main screen should appear:  
-   11. ![][image2]  
+   11. ![](HomeScreen.PNG) 
    12. Congratulations you successfully downloaded the game.
 
 For easy game access, Users can pin the “TomogatchiAPP” application to the taskbar or send it to the desktop.
