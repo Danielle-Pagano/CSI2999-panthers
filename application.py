@@ -13,7 +13,7 @@ def update_bar(bar, countdown_time):
         countdown_time -= 1
         bar["value"] = countdown_time
         #Adds bar to active updates
-        active_updates[bar_id] = bar.after(1000, lambda: update_bar(bar, countdown_time))
+        active_updates[bar_id] = bar.after(21600, lambda: update_bar(bar, countdown_time))
     else:
         bar["value"] = 0
 

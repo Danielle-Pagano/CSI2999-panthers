@@ -271,9 +271,9 @@ class MainScreen(tk.Frame):
         threading.Thread(target=home).start()
 
     def initialize_progress_bars(self):
-        application.update_bar(self.happiness_bar, 100)
-        application.update_bar(self.hunger_bar, 100)
-        application.update_bar(self.energy_bar, 100)
+        application.update_bar(self.happiness_bar, 7200)
+        application.update_bar(self.hunger_bar, 7200)
+        application.update_bar(self.energy_bar, 21600)
 
     def update_user_info(self, user_data):
         # Extract user information
@@ -294,9 +294,9 @@ class MainScreen(tk.Frame):
         if self.history == 0:
             self.initialize_progress_bars()
         self.history = 1
-        application.add_to_bar(self.happiness_bar, 100)
-        application.add_to_bar(self.hunger_bar, 100)
-        application.add_to_bar(self.energy_bar, 100)
+        application.add_to_bar(self.happiness_bar, 7200)
+        application.add_to_bar(self.hunger_bar, 7200)
+        application.add_to_bar(self.energy_bar, 21600)
         spf.start_Thread()
         threading.Thread(target=lambda: spf.sprite_animation(self)).start()
 
