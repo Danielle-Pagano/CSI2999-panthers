@@ -31,7 +31,7 @@
 
    8. Click “More Info” and select “Run anyway”  
    9. Tomogatchi’s main screen should appear:  
-   10. ![](homeScreen2.jpg)
+   10. ![]([homeScreen2.jpg](https://github.com/Danielle-Pagano/CSI2999-panthers/blob/main/README%20IMAGES/homeScreen2.JPG))
    11. 
    12. Congratulations you successfully downloaded the game.
 
