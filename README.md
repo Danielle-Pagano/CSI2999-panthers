@@ -27,7 +27,7 @@
    6. Within the folder, Run “TomogatchiAPP.exe”  
    7. If this window appears:
 
-       ![][HomeScreen.PNG]
+       ![][HomeScreen2.JPG]
    8. 
    9. Click “More Info” and select “Run anyway”  
    10. Tomogatchi’s main screen should appear:  
