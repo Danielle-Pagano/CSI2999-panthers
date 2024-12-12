@@ -26,7 +26,6 @@
    5. Extract the zip file to your desired location  
    6. Within the folder, Run “TomogatchiAPP.exe”  
    7. If this window appears:
-
        ![](Warning.PNG)
 
    8. Click “More Info” and select “Run anyway”  
