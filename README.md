@@ -27,7 +27,7 @@
    6. Within the folder, Run “TomogatchiAPP.exe”  
    7. If this window appears:
 
-       ![](Warning.PNG)
+   ![](Warning.PNG)
    8. 
    9. Click “More Info” and select “Run anyway”  
    10. Tomogatchi’s main screen should appear:  
@@ -56,13 +56,13 @@ Tomogatchi allows for registration so the game process can be saved and linked t
 **Game Play Instructions**
 
 1. After registering or logging in, the user will be welcomed with this screen  
-   ![][image4]  
+   ![](PlayerScreenPictogram.PNG)  
 2. The pet screen is a representation of their health.![][image5]  
 3. The **Play Button** allows the user to increase the pet's **Happiness Bar**. When pressed it will open a separate screen for a tile-based Simon says where the user must replicate the flashes on the screen, with an additional step each round.  
-   1. ![][image6]  
+   1. ![](Simon.PNG)  
       1. To play a tile-based Simon game, the user must carefully observe a sequence of tiles that are revealed. They must try to replicate that sequence by tapping the tiles in the same order; with each correct round, the sequence gets longer and more complex, and if a player taps the wrong tile, they lose the game.   
 4. The **Feed Button** opens a separate screen with two food options: Acorn or Sunflower seeds. Both food choices increase the pet’s **Hunger Bar.**  
-   1. ![][image7]  
+   1. ![](ChooseFood.PNG) 
 5. The **Rest Button** will put the pet to sleep, this is important to restore the pet’s **Energy Bar**. Clicking on the Rest button a second time will wake the pet up.  
 6. The **Home Button** returns the user to the home screen.
 
