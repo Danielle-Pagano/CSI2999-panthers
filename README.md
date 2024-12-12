@@ -27,11 +27,11 @@
    6. Within the folder, Run “TomogatchiAPP.exe”  
    7. If this window appears:
 
-       ![][image1]
+       ![](Warning.PNG)
 
    8. Click “More Info” and select “Run anyway”  
    9. Tomogatchi’s main screen should appear:  
-   10. ![][image2]  
+   10. ![](HomeScreen.PNG)  
    11. Congratulations you successfully downloaded the game.
 
 For easy game access, Users can pin the “TomogatchiAPP” application to the taskbar or send it to the desktop.
@@ -44,7 +44,7 @@ Tomogatchi allows for registration so the game process can be saved and linked t
 2. Enter your first and last name, email address, unique password, and confirm password.  
 3. Next, the user can enter your new pet’s name and species.  
    1. The game currently offers Squirrel and Pigeon.  
-      ![][image3]  
+      ![](Registration.PNG) 
 4. Once all fields are completed, select register.  
 5. Congratulations, you have successfully registered.
 
@@ -56,13 +56,13 @@ Tomogatchi allows for registration so the game process can be saved and linked t
 **Game Play Instructions**
 
 1. After registering or logging in, the user will be welcomed with this screen  
-   ![][image4]  
-2. The pet screen is a representation of their health.![][image5]  
+   ![](PlayerScreenPictogram.PNG) 
+2. The pet screen is a representation of their health.![](PetEmotions.PNG)  
 3. The **Play Button** allows the user to increase the pet's **Happiness Bar**. When pressed it will open a separate screen for a tile-based Simon says where the user must replicate the flashes on the screen, with an additional step each round.  
-   1. ![][image6]  
+   1. ![](Simon.PNG)  
       1. To play a tile-based Simon game, the user must carefully observe a sequence of tiles that are revealed. They must try to replicate that sequence by tapping the tiles in the same order; with each correct round, the sequence gets longer and more complex, and if a player taps the wrong tile, they lose the game.   
 4. The **Feed Button** opens a separate screen with two food options: Acorn or Sunflower seeds. Both food choices increase the pet’s **Hunger Bar.**  
-   1. ![][image7]  
+   1. ![](ChooseFood.PNG) 
 5. The **Rest Button** will put the pet to sleep, this is important to restore the pet’s **Energy Bar**. Clicking on the Rest button a second time will wake the pet up.  
 6. The **Home Button** returns the user to the home screen.
 
