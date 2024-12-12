@@ -27,7 +27,7 @@
    6. Within the folder, Run “TomogatchiAPP.exe”  
    7. If this window appears:
 
-       ![](HomeScreen2.JPG)
+       ![](Warning.PNG)
    8. 
    9. Click “More Info” and select “Run anyway”  
    10. Tomogatchi’s main screen should appear:  
@@ -44,7 +44,7 @@ Tomogatchi allows for registration so the game process can be saved and linked t
 2. Enter your first and last name, email address, unique password, and confirm password.  
 3. Next, the user can enter your new pet’s name and species.  
    1. The game currently offers Squirrel and Pigeon.  
-      ![][image3]  
+      ![](Registration.PNG)
 4. Once all fields are completed, select register.  
 5. Congratulations, you have successfully registered.
 
