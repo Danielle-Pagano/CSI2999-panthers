@@ -26,13 +26,12 @@
    5. Extract the zip file to your desired location  
    6. Within the folder, Run “TomogatchiAPP.exe”  
    7. If this window appears:
-       8. ![](Warning.PNG)
+        ![](Warning.PNG)
 
-   9. Click “More Info” and select “Run anyway”  
-   10. Tomogatchi’s main screen should appear:  
-   11. ![](HomeScreen.PNG)  
-   12. Congratulations you successfully downloaded the game.
-
+   8. Click “More Info” and select “Run anyway”  
+   9. Tomogatchi’s main screen should appear:  
+   10. ![](HomeScreen.PNG)  
+   11. Congratulations you successfully downloaded the game.
 For easy game access, Users can pin the “TomogatchiAPP” application to the taskbar or send it to the desktop.
 
 **Registration Instructions**
